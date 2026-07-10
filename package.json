@@ -1,0 +1,28 @@
+{
+  "name": "fluke-motion",
+  "version": "1.0.0",
+  "description": "Full-spectrum UI motion design skill for AI coding agents — installs into Claude Code, Cursor, GitHub Copilot, Windsurf, or any AGENTS.md-reading agent.",
+  "keywords": [
+    "ai-agent-skill",
+    "claude-code",
+    "cursor",
+    "copilot",
+    "fluke-motion",
+    "motion-design",
+    "animation",
+    "ui-motion",
+    "agents-md"
+  ],
+  "license": "MIT",
+  "bin": {
+    "fluke-motion": "bin/cli.js"
+  },
+  "files": [
+    "bin",
+    "skills"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "type": "commonjs"
+}
