@@ -1,15 +1,27 @@
 ---
 name: fluke-motion
-description: Full-spectrum UI motion design assistant for product designers — from basic micro-interactions to award-tier (Awwwards/FWA) signature animation, on web AND mobile (React Native Reanimated, Flutter). Covers parallax, scroll-driven, scrollytelling, spring physics, shared-element transitions, SVG/shader effects, WebGL heroes and fluid simulation, custom cursors, kinetic typography, velocity skew, sticky stacking cards, marquees, physics playgrounds, 3D tilt cards, gesture-driven motion — plus how award sites COMBINE techniques into one coherent motion system (one clock, one lerp, motion tokens). When working inside a project, it first scans the codebase (stack, components, existing motion tokens and animation libraries) so every implementation matches the project's conventions. Three modes — write dev-ready motion specs (easing, duration, trigger), generate runnable animation prototypes (CSS, Framer Motion, GSAP, Lenis, Three.js, Reanimated, Flutter, or whatever fits the project), and critique existing motion against animation principles, accessibility, and performance. Use this whenever the user asks about animation, transitions, micro-interactions, hover/loading states, skeletons, toasts, preloaders, page transitions, "how should this move," easing curves, motion handoff docs, parallax, scroll effects, springs, custom cursors, text animation, or wants an animated prototype. Trigger even without the word "motion" — e.g. "make this button feel more alive," "the modal feels janky," "I want an Apple-style scroll section," "make my site feel like an awwwards site," "spec out the loading state," "animate my logo," "bikin efek hover keren," "bikin website yang keren kayak awwwards."
+description: Full-spectrum UI motion design skill for designers and developers — from basic micro-interactions to award-tier (Awwwards/FWA) signature animation, on web AND mobile (React Native Reanimated, Flutter). Covers parallax, scroll-driven, scrollytelling, spring physics, shared-element transitions, SVG/shader effects, WebGL heroes and fluid simulation, custom cursors, kinetic typography, velocity skew, sticky stacking cards, marquees, physics playgrounds, 3D tilt cards, gesture-driven motion — plus how award sites COMBINE techniques into one coherent motion system (one clock, one lerp, motion tokens). When working inside a project, it first scans the codebase (stack, components, existing motion tokens and animation libraries) so every implementation matches the project's conventions. Three modes — write dev-ready motion specs (easing, duration, trigger), generate runnable animation prototypes (CSS, Framer Motion, GSAP, Lenis, Three.js, Reanimated, Flutter, or whatever fits the project), and critique existing motion against animation principles, accessibility, and performance. Use this whenever the user asks about animation, transitions, micro-interactions, hover/loading states, skeletons, toasts, preloaders, page transitions, "how should this move," easing curves, motion handoff docs, parallax, scroll effects, springs, custom cursors, text animation, or wants an animated prototype. Trigger even without the word "motion" — e.g. "make this button feel more alive," "the modal feels janky," "I want an Apple-style scroll section," "make my site feel like an awwwards site," "spec out the loading state," "animate my logo," "bikin efek hover keren," "bikin website yang keren kayak awwwards."
 ---
 
 # Motion Design Assistant
 
-Helps product designers turn motion ideas into something concrete — a spec engineers can build from, a prototype they can preview, or a critique of motion that already exists. Covers the full range: a 100ms toggle animation and an Apple-style scroll-scrubbed hero section are both in scope.
+Turns motion ideas into something concrete for designers and developers alike — working code in a real project, a runnable prototype to preview, a spec engineers can build from, or a critique of motion that already exists. Covers the full range: a 100ms toggle and an Apple-style scroll-scrubbed hero are both in scope.
+
+**Default to working code.** This skill usually runs inside a coding agent (Claude Code, Cursor, Copilot), where the person almost always wants motion *implemented in their project*, not a handoff document. When someone says "add a nice animation to this button," give them the code — matched to their stack (Step 0) — not a spec table. Only produce a spec (Mode 1) when they explicitly ask for handoff documentation, or when there's no codebase and they're clearly a designer planning work.
+
+## Match ambition to context (read before reaching for the flashy stuff)
+
+The award-tier techniques in this skill (custom cursors, velocity skew, fluid simulation, kinetic typography) are *concentrated in the reference files by design* — but most requests don't want them. Calibrate:
+
+- **Product UI** (dashboards, forms, settings, SaaS apps) → **restraint**. Micro-interactions, honest easing, sub-300ms transitions, `prefers-reduced-motion`. Reaching for a custom cursor or scroll-jacking here is a mistake. This is the common case.
+- **Marketing / landing / brand / portfolio** → **signature moments**. One or two hero effects (a scroll section, a kinetic headline, a fluid hero), everything else still restrained. Award juries reward *one* signature move plus polish, not stacked gimmicks.
+- **Explicit ask** ("make it feel like awwwards", "I want it wild") → go big, but still gate every heavy effect behind `prefers-reduced-motion` and a performance budget, and say what it costs.
+
+When unsure which bucket a request is in, ask — or default to restraint. Over-animating a product UI is the most common way motion work fails.
 
 ## Reference files — read before answering
 
-Deep knowledge lives in `references/`. Read the relevant file(s) before producing output — the values and rules there come from authoritative sources (Material, Apple HIG, NN/g, web.dev, GSAP/Motion docs) and beat improvised numbers:
+Deep knowledge lives in `references/`. Read the relevant file(s) before producing output — the values and rules there come from authoritative sources (Material, Apple HIG, NN/g, web.dev, GSAP/Motion docs) and beat improvised numbers. **Apply them, don't recite them** — pull the specific value or pattern the task needs and build with it; never dump a reference file's contents at the user.
 
 - **[references/fundamentals.md](references/fundamentals.md)** — motion taxonomy, animation principles, easing curves (with exact cubic-bezier values), duration tables, Material/Apple system values. Read for ANY spec work and whenever choosing easing/duration.
 - **[references/best-practices.md](references/best-practices.md)** — do's/don'ts, anti-patterns, accessibility (prefers-reduced-motion, vestibular triggers, WCAG), performance (compositor-only properties, will-change, layout thrashing). Read for ANY critique, and for prototypes meant to be production-ready.
@@ -51,19 +63,9 @@ These hold across every mode:
 6. **Always handle `prefers-reduced-motion`** — replace movement with fades, don't delete meaning. Parallax and big zooms are the top vestibular triggers.
 7. **Springs for gesture-driven/interruptible motion, tweens for fire-and-forget choreography.**
 
-## Mode 1: Motion Spec (handoff-ready documentation)
+## Mode 1: Implement / Prototype (runnable code) — the default
 
-Use when the designer needs to communicate an animation to an engineer without writing code — the most common ask in a real handoff. Favor this mode when the request is ambiguous between spec and prototype.
-
-For each interaction, specify: **trigger** (what starts it) · **properties animated** (prefer transform/opacity) · **duration** in ms · **easing** as a named curve + exact cubic-bezier, with one line on why · **delay/stagger** if multiple elements move · **reduced-motion fallback**.
-
-Pull exact values from [references/fundamentals.md](references/fundamentals.md) — it has the full duration table and the workhorse curve list (expo-out, back-out, Material tokens). For springs, spec stiffness/damping (or visualDuration + bounce) instead of duration+curve.
-
-Output as a table or structured list the designer can paste into Figma dev mode, a Jira ticket, or a handoff doc. Terse — engineers want values, not prose.
-
-## Mode 2: Motion Prototype (runnable code)
-
-Use when the designer wants to *see* the motion — exploration, feasibility check, or a preview to react to.
+Use when someone wants motion built — in their project, or as a standalone prototype to preview. This is the default mode in a coding agent.
 
 Pick the stack by escalation, not preference:
 - **Plain CSS** — transitions, keyframes, `linear()` springs, native scroll-driven animations (`animation-timeline`). Default when there's no project context; zero setup. Covers more than most people think — check [references/advanced-techniques.md](references/advanced-techniques.md) before assuming a library is needed.
@@ -71,11 +73,38 @@ Pick the stack by escalation, not preference:
 - **Framer Motion (Motion)** — when the project is React and needs springs, layout animations, `layoutId` shared elements, or gestures.
 - **GSAP** — complex scroll choreography (ScrollTrigger pin/scrub/snap), timelines, SplitText reveals. Free since 3.13, including all plugins.
 - **Mobile apps** — React Native: Reanimated (worklets/CSS API); Flutter: implicit widgets + M3 `Durations`/`Easing` constants or flutter_animate. See [references/mobile-native.md](references/mobile-native.md).
-- If a codebase exists, match its stack — check `package.json` before introducing anything.
+- **Inside a codebase, the project's installed library wins** (Step 0) — never introduce a competing one for what the existing one already does.
 
-Production-readiness bar for every prototype: reduced-motion media query included, compositor-safe properties, interruptible where state can change mid-flight, correct `transform-origin` (popovers scale from their trigger, not center).
+Production-readiness bar for every prototype: reduced-motion media query included, compositor-safe properties (transform/opacity), interruptible where state can change mid-flight, correct `transform-origin` (popovers scale from their trigger, not center).
 
-After generating, show it — use the Artifact tool for standalone HTML/CSS/JS prototypes so the designer can interact immediately. For advanced scroll effects note browser support (table in advanced-techniques.md) and include the `@supports` fallback.
+**Example — the quality bar.** A request "make the submit button feel responsive" in a React + Tailwind project:
+```jsx
+// press feedback: 0.97 scale, 150ms ease-out, transform-only, respects reduced-motion
+<button className="transition-transform duration-150 ease-out active:scale-[0.97]
+                   motion-reduce:transition-none motion-reduce:active:scale-100">
+  Submit
+</button>
+```
+Note what makes it correct, not just present: sub-300ms, ease-out, transform-only, `motion-reduce` fallback, scale in the 0.95–0.98 range from interaction-recipes.md — not an invented value.
+
+**Verify it before calling it done.** Motion is visual — code that typechecks can still look wrong. If browser preview tools are available, run the affected view, trigger the interaction, and watch it: is it the right speed, does it hold 60fps, does the origin look right, does it still work with reduced-motion emulated? Fix what looks off. Don't ship motion you haven't seen move. For standalone (no-project) prototypes, use the Artifact tool so the person can interact immediately; note browser support + `@supports` fallback for advanced scroll effects.
+
+## Mode 2: Motion Spec (handoff-ready documentation)
+
+Use when someone explicitly wants to communicate an animation to an engineer *without* code — a Figma/Jira handoff — or when there's no codebase and they're planning work. Don't default here in a coding agent; give code (Mode 1) unless a spec is asked for.
+
+For each interaction, specify: **trigger** (what starts it) · **properties animated** (prefer transform/opacity) · **duration** in ms · **easing** as a named curve + exact cubic-bezier, with one line on why · **delay/stagger** if multiple elements move · **reduced-motion fallback**.
+
+Pull exact values from [references/fundamentals.md](references/fundamentals.md) — the full duration table and workhorse curves (expo-out, back-out, Material tokens). For springs, spec stiffness/damping (or visualDuration + bounce) instead of duration+curve.
+
+**Example row:**
+
+| Interaction | Trigger | Properties | Duration | Easing | Reduced-motion |
+|---|---|---|---|---|---|
+| Modal enter | open click | opacity 0→1, scale 0.96→1 | 250ms | `cubic-bezier(0.16,1,0.3,1)` (expo-out — decelerates in, feels responsive) | opacity only, no scale |
+| Modal exit | close/backdrop | opacity 1→0, scale 1→0.98 | 180ms | `cubic-bezier(0.3,0,0.8,0.15)` (accelerate — get out of the way) | opacity only |
+
+Output as a table or structured list the person can paste into Figma dev mode or a ticket. Terse — engineers want values, not prose.
 
 ## Mode 3: Motion Critique
 
@@ -95,6 +124,6 @@ Structure each finding as: what's happening now → why it reads as off (name th
 
 ## General notes
 
-- Modes compose: a critique often ends with a corrected spec; a spec sometimes deserves a quick prototype to sanity-check. Follow the conversation, not rigid boundaries.
-- When the product's existing motion scale/tokens are unknown and the numbers matter for handoff, ask rather than invent — a wrong number costs an engineer rework.
+- Modes compose: a critique often ends with a corrected spec or a fix applied in code; an implementation sometimes deserves a spec written alongside it. Follow the conversation, not rigid boundaries.
+- When the existing motion scale/tokens are unknown and the numbers matter, ask rather than invent — a wrong number costs rework.
 - For ambitious asks ("Apple-style scroll section", "award-site hero"), set expectations honestly: name the technique, its payload/performance cost, and the accessibility gate it requires — then build the strongest version that respects those constraints.
