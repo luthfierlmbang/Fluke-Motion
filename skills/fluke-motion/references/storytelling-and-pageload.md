@@ -113,6 +113,7 @@ document.fonts.ready.then(() => {
   2. Start at **`opacity: 0.1`** (this makes the initial render an LCP candidate — the documented Chrome workaround; visually indistinguishable).
   3. Paint at full opacity, start the animation after first paint (double-rAF or `load`).
   4. Ensure another large visible element is the LCP candidate.
+- **Masked line reveals are LCP-safe** — a headline line starting `translateY(110%)` inside an `overflow: hidden` clip is off-screen but at **full opacity**, so it isn't excluded the way `opacity: 0` is; Chrome records the LCP paint when it slides in, and if the default (no-intro) state is the final resting layout, the text paints immediately for no-JS/repeat visits. This is why masked transform reveals beat opacity fades for hero headlines — the clip is just a static wrapper, the reveal animates only `transform`.
 - A full-viewport preloader is excluded from LCP as background — so **preloaders push LCP toward/past 2.5s** by definition.
 - **CLS:** entrance movement only via `transform` (composited, not counted). Animating top/left/margin or injecting late hero content without reserved space counts. AOS-style JS that sets `opacity:0 + translate` on above-fold content risks both a flash and the LCP penalty.
 

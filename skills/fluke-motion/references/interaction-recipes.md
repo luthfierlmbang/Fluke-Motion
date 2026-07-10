@@ -64,7 +64,9 @@ From Emil Kowalski's definitive writeup:
 
 ## 5. Dropdown, popover, tooltip
 
-**The recipe:** `opacity 0→1` + `scale 0.95→1` (never from 0), 150–200ms ease-out in, 100–150ms ease-in out. **Transform-origin from the trigger** — Radix exposes it: `transform-origin: var(--radix-popover-content-transform-origin)` (accounts for side/align/collision flips).
+**The recipe:** `opacity 0→1` + `scale 0.95→1` (never from 0), 150–200ms in, 100–150ms out. Exact curves: in = `cubic-bezier(0.16,1,0.3,1)` (expo-out — decelerates, feels responsive); out = `cubic-bezier(0.3,0,0.8,0.15)` (accelerate — get out of the way) or a plain fast fade. Don't ship browser-default `ease-out` — it's too mild for this. **Transform-origin from the trigger** — Radix exposes it: `transform-origin: var(--radix-popover-content-transform-origin)` (accounts for side/align/collision flips); without Radix, set `top`/`top left`/`top right` to match how the menu aligns to its button.
+
+**Plain-CSS exit** (single `.open` class, no library): CSS transitions have no real exit state, so the close is just the reverse transition when `.open` is removed — give it a shorter duration on the base selector: `.menu { transition-duration: 130ms } .menu.open { transition-duration: 180ms }`. If you need the element to actually leave the DOM after animating (unmount), that's where you reach for a library (`AnimatePresence`) or Radix — plain CSS can't delay unmount.
 
 **Radix mechanics:** style via `[data-state="open"]`/`[data-state="closed"]`; exit animations require CSS **animations** (Radix suspends unmount for animations, not transitions); JS libraries need `forceMount` + `AnimatePresence`.
 

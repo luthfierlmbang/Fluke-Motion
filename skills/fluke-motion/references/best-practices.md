@@ -62,7 +62,8 @@ Pre-animation checklist: (1) Where is user attention now? (2) Goal — attract a
 ## 4. Accessibility
 
 ### prefers-reduced-motion — implement correctly
-- **"Reduce" means reduce, not remove.** The target is *motion* (translation, scale, parallax, spin). Fades, color changes, small scale changes are safe. Replace movement keyframes with opacity/color equivalents at the same duration/easing — don't delete meaning.
+- **"Reduce" means reduce, not remove.** The target is *motion* (translation, scale, parallax, spin). Fades, color changes, blur, small scale changes are safe. Replace movement keyframes with opacity/color equivalents at the same duration/easing — don't delete meaning.
+- **Separate the sub-properties within one keyframe.** A keyframe like `{ transform: translateY(110%); filter: blur(12px); opacity: 0 }` mixes an unsafe part (the translate) with safe parts (blur, opacity). The reduced-motion version keeps the safe fade and drops only the movement — e.g. `transform: none` but a `blur → 0` or `opacity 0→1` still runs. Nuking the whole keyframe to `none` is the over-aggressive anti-pattern; a plain fade-in is the correct reduced-motion form of most reveals.
 - Three strategies (Val Head): **Replace** (bounce → fade), **Remove** (delete motion, keep meaning), **Pause/on-demand** (autoplay → user-triggered).
 - **Opt-in pattern (recommended):** wrap motion in `@media (prefers-reduced-motion: no-preference) { ... }` — unsupporting browsers default to no animation. Stronger than opt-out.
 - **Anti-pattern:** `* { animation: none !important; transition: none !important; }` — too aggressive, kills essential feedback.

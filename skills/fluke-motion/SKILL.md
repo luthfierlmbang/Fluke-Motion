@@ -81,13 +81,21 @@ Production-readiness bar for every prototype: reduced-motion media query include
 ```jsx
 // press feedback: 0.97 scale, 150ms ease-out, transform-only, respects reduced-motion
 <button className="transition-transform duration-150 ease-out active:scale-[0.97]
-                   motion-reduce:transition-none motion-reduce:active:scale-100">
+                   motion-reduce:transition-none">
   Submit
 </button>
 ```
-Note what makes it correct, not just present: sub-300ms, ease-out, transform-only, `motion-reduce` fallback, scale in the 0.95–0.98 range from interaction-recipes.md — not an invented value.
+Note what makes it correct, not just present: sub-300ms, ease-out, transform-only, `motion-reduce` fallback, scale in the 0.95–0.98 range from interaction-recipes.md — not an invented value. (`motion-reduce:transition-none` alone disables it — no need to also pin the scale.)
 
-**Verify it before calling it done.** Motion is visual — code that typechecks can still look wrong. If browser preview tools are available, run the affected view, trigger the interaction, and watch it: is it the right speed, does it hold 60fps, does the origin look right, does it still work with reduced-motion emulated? Fix what looks off. Don't ship motion you haven't seen move. For standalone (no-project) prototypes, use the Artifact tool so the person can interact immediately; note browser support + `@supports` fallback for advanced scroll effects.
+**Motion tokens keep it consistent.** When adding more than a one-off, define tokens so every component shares one vocabulary instead of scattered magic numbers. In Tailwind, extend the theme:
+```js
+// tailwind.config — theme.extend
+transitionDuration: { fast: '150ms', base: '200ms', slow: '300ms' },
+transitionTimingFunction: { 'out-expo': 'cubic-bezier(0.16,1,0.3,1)' },
+```
+In plain CSS, the same as custom properties (`--dur-fast`, `--ease-out-expo`). If the project already has tokens (Step 0), use those — don't invent a parallel set.
+
+**Verify it before calling it done — when there's something to run.** Motion is visual; code that typechecks can still look wrong. If there's a runnable surface and browser preview tools are available, run the affected view, trigger the interaction, and watch it: right speed, holds 60fps, origin looks right, still works with reduced-motion emulated? Fix what looks off — don't ship motion you haven't seen move. For standalone (no-project) prototypes, use the Artifact tool so the person can interact immediately. When there's **no** runnable surface — a pure code critique, or a project the user only described that you can't open — skip verification rather than block on it; say the motion is unverified if it matters. Note browser support + `@supports` fallback for advanced scroll effects.
 
 ## Mode 2: Motion Spec (handoff-ready documentation)
 
