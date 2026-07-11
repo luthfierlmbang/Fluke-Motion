@@ -9,19 +9,36 @@ Turns motion ideas into something concrete for designers and developers alike �
 
 **Default to working code.** This skill usually runs inside a coding agent (Claude Code, Cursor, Copilot), where the person almost always wants motion *implemented in their project*, not a handoff document. When someone says "add a nice animation to this button," give them the code — matched to their stack (Step 0) — not a spec table. Only produce a spec (Mode 1) when they explicitly ask for handoff documentation, or when there's no codebase and they're clearly a designer planning work.
 
-## Match ambition to context (read before reaching for the flashy stuff)
+## Match ambition to the surface — a casual ask doesn't lower the bar
 
-The award-tier techniques in this skill (custom cursors, velocity skew, fluid simulation, kinetic typography) are *concentrated in the reference files by design* — but most requests don't want them. Calibrate:
+Two axes people collapse — keep them apart:
 
-- **Product UI** (dashboards, forms, settings, SaaS apps) → **restraint**. Micro-interactions, honest easing, sub-300ms transitions, `prefers-reduced-motion`. Reaching for a custom cursor or scroll-jacking here is a mistake. This is the common case.
-- **Marketing / landing / brand / portfolio** → **signature moments**. One or two hero effects (a scroll section, a kinetic headline, a fluid hero), everything else still restrained. Award juries reward *one* signature move plus polish, not stacked gimmicks.
-- **Explicit ask** ("make it feel like awwwards", "I want it wild") → go big, but still gate every heavy effect behind `prefers-reduced-motion` and a performance budget, and say what it costs.
+- **Restraint = "don't stack gimmicks" (one signature move + polish), NOT "keep it basic."** A portfolio with one masked hero reveal and fades everywhere else isn't restrained — it's under-built.
+- **The surface sets the ambition floor; how loud the ask is does not.** "make it feel alive", "biar ga flat", "tambahin animasi", "less stiff" on a portfolio is a request for *craft*, not a fade. You will rarely get an explicit "make it awwwards" — treat the surface as the signal, not the adjective.
 
-When unsure which bucket a request is in, ask — or default to restraint. Over-animating a product UI is the most common way motion work fails.
+Calibrate by **surface**:
+
+- **Product UI** (dashboards, forms, settings, SaaS app screens) → **restraint is the default**. Micro-interactions, honest easing, sub-300ms transitions, `prefers-reduced-motion`. A custom cursor or scroll-jacking here is a mistake. Restraint here = *fewer* effects, done well.
+- **Design-forward surface** (portfolio, landing, brand, marketing, agency, campaign, hero/showpiece) → **signature is the default — even on a vague ask.** Floor = ONE genuine signature moment (reactive scroll effect, kinetic headline, contextual cursor, fluid hero — pulled from the signature reference files) *plus* restrained polish elsewhere. A lone masked-text reveal is the floor's *minimum*, not the finished job — pair it with at least one distinctive reactive effect. Still gate every heavy effect behind `prefers-reduced-motion` + a perf budget, and say what it costs.
+- **Explicit "go wild"** → add a second signature moment, still gated.
+
+Ambiguous surface? Infer it (marketing page vs app screen) or ask — but **never default a design-forward surface down to product-UI restraint.** Shipping product-UI-level fades on a portfolio is a failure this skill exists to prevent, as much as over-animating a dashboard is.
+
+## Offer tiers on an open-ended ask — put the signature option on the table
+
+For motion across a whole page or section — especially a vague ask on a design-forward surface — don't silently pick one level and build. Sketch the options, name your pick, build it:
+
+- **Basic** — micro-interactions, fades, hover (where a vague ask collapses if you're not careful).
+- **Signature** — one distinctive reactive effect per key section on one motion system. *Default for design-forward.*
+- **Showpiece** — stacked signatures / WebGL / physics, with the perf + a11y cost stated.
+
+One line + honest cost per tier, then build your recommendation. Surfacing the signature tier is what stops "tambahin animasi" from quietly becoming fades — the option is on the table where the user can level up or down. Single component (one button/toggle)? Skip the menu — build the right level and note it can go bigger.
 
 ## Reference files — read before answering
 
 Deep knowledge lives in `references/`. Read the relevant file(s) before producing output — the values and rules there come from authoritative sources (Material, Apple HIG, NN/g, web.dev, GSAP/Motion docs) and beat improvised numbers. **Apply them, don't recite them** — pull the specific value or pattern the task needs and build with it; never dump a reference file's contents at the user.
+
+**Design-forward work requires a signature file.** For any design-forward surface, `fundamentals.md` + `interaction-recipes.md` are NOT enough — alone they yield fades and micro-interactions, which is the under-built result to avoid. Before calling such work done you MUST open at least one signature technique file (`signature-scroll.md`, `signature-cursor-hover.md`, `kinetic-typography.md`, `creative-effects.md`, `generative-interactive.md`) and build a real effect from it. Reading only the core rules plus a common-component recipe is the tell that you under-reached — go back and open a signature file.
 
 - **[references/fundamentals.md](references/fundamentals.md)** — motion taxonomy, animation principles, easing curves (with exact cubic-bezier values), duration tables, Material/Apple system values. Read for ANY spec work and whenever choosing easing/duration.
 - **[references/best-practices.md](references/best-practices.md)** — do's/don'ts, anti-patterns, accessibility (prefers-reduced-motion, vestibular triggers, WCAG), performance (compositor-only properties, will-change, layout thrashing). Read for ANY critique, and for prototypes meant to be production-ready.
@@ -95,7 +112,7 @@ transitionTimingFunction: { 'out-expo': 'cubic-bezier(0.16,1,0.3,1)' },
 ```
 In plain CSS, the same as custom properties (`--dur-fast`, `--ease-out-expo`). If the project already has tokens (Step 0), use those — don't invent a parallel set.
 
-**Verify it before calling it done — when there's something to run.** Motion is visual; code that typechecks can still look wrong. If there's a runnable surface and browser preview tools are available, run the affected view, trigger the interaction, and watch it: right speed, holds 60fps, origin looks right, still works with reduced-motion emulated? Fix what looks off — don't ship motion you haven't seen move. For standalone (no-project) prototypes, use the Artifact tool so the person can interact immediately. When there's **no** runnable surface — a pure code critique, or a project the user only described that you can't open — skip verification rather than block on it; say the motion is unverified if it matters. Note browser support + `@supports` fallback for advanced scroll effects.
+**Verify it before calling it done — when there's something to run.** Motion is visual; code that typechecks can still look wrong. If there's a runnable surface and browser preview tools are available, run the affected view, trigger the interaction, and watch it: right speed, holds 60fps, origin looks right, still works with reduced-motion emulated? Fix what looks off — don't ship motion you haven't seen move. For a design-forward surface, also run the ambition check: did I build at least the signature floor and put the tier options on the table, or did I quietly ship product-UI-level fades on a portfolio? The latter is under-reach — open a signature technique file and lift it. For standalone (no-project) prototypes, use the Artifact tool so the person can interact immediately. When there's **no** runnable surface — a pure code critique, or a project the user only described that you can't open — skip verification rather than block on it; say the motion is unverified if it matters. Note browser support + `@supports` fallback for advanced scroll effects.
 
 ## Mode 2: Motion Spec (handoff-ready documentation)
 
