@@ -1,0 +1,1360 @@
+<title>Motion Specimen — Complete Catalog</title>
+<style>
+  :root{
+    --ink:#17140F; --paper:#E8E4D8; --paper-raised:#DEDACB;
+    --accent:#FF3B6E; --accent-soft: rgba(255,59,110,.16);
+    --line: rgba(23,20,15,0.16); --line-strong: rgba(23,20,15,0.32);
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
+    --serif: ui-serif, Georgia, "Iowan Old Style", "Times New Roman", serif;
+    --grotesk: ui-sans-serif, "Helvetica Neue", Arial, system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --ink:#ECE7D9; --paper:#18160F; --paper-raised:#211E15; --accent:#FF6E93; --accent-soft: rgba(255,110,147,.16); --line: rgba(236,231,217,0.14); --line-strong: rgba(236,231,217,0.3); }
+  }
+  :root[data-theme="dark"]{ --ink:#ECE7D9; --paper:#18160F; --paper-raised:#211E15; --accent:#FF6E93; --accent-soft: rgba(255,110,147,.16); --line: rgba(236,231,217,0.14); --line-strong: rgba(236,231,217,0.3); }
+  :root[data-theme="light"]{ --ink:#17140F; --paper:#E8E4D8; --paper-raised:#DEDACB; --accent:#FF3B6E; --accent-soft: rgba(255,59,110,.16); --line: rgba(23,20,15,0.16); --line-strong: rgba(23,20,15,0.32); }
+
+  .specimen{ background: var(--paper); color: var(--ink); font-family: var(--serif); overflow-x: hidden; cursor: none; }
+  .specimen *{ box-sizing: border-box; }
+  .specimen ::selection{ background: var(--accent); color: var(--paper); }
+  @media (hover: none), (pointer: coarse){ .specimen{ cursor:auto; } .cursor-dot,.cursor-ring{ display:none; } }
+
+  .cursor-dot,.cursor-ring{ position:fixed; top:0; left:0; pointer-events:none; z-index:999; border-radius:999px; transform:translate(-100px,-100px); mix-blend-mode:difference; }
+  .cursor-dot{ width:6px; height:6px; background:var(--ink); }
+  .cursor-ring{ width:34px; height:34px; margin:-14px 0 0 -14px; border:1px solid var(--ink); display:flex; align-items:center; justify-content:center;
+    transition:width .25s cubic-bezier(.16,1,.3,1), height .25s cubic-bezier(.16,1,.3,1), margin .25s cubic-bezier(.16,1,.3,1), background-color .25s; }
+  .cursor-ring.is-active{ width:76px; height:76px; margin:-38px 0 0 -38px; background:var(--accent); border-color:transparent; }
+  .cursor-label{ font-family:var(--mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--paper); opacity:0; transition:opacity .15s; }
+  .cursor-ring.is-active .cursor-label{ opacity:1; }
+
+  .topbar{ position:sticky; top:0; z-index:60; display:flex; justify-content:space-between; align-items:baseline; padding:16px clamp(20px,5vw,56px);
+    font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; border-bottom:1px solid var(--line); background:var(--paper); backdrop-filter: blur(6px); }
+  .topbar .mark{ font-weight:700; }
+  .topbar .tag{ opacity:.55; }
+
+  .hero{ padding:clamp(40px,10vw,110px) clamp(20px,5vw,56px) clamp(32px,6vw,64px); max-width:1180px; }
+  .hero-title{ font-family:var(--grotesk); font-weight:800; font-size:clamp(36px,7.5vw,92px); line-height:.96; letter-spacing:-.03em; margin:0; text-wrap:balance; }
+  .hero-title .line{ display:block; overflow:hidden; padding-bottom:.06em; margin-bottom:-.06em; }
+  .hero-title .line-inner{ display:block; transform:translateY(112%); }
+  .specimen.loaded .hero-title .line-inner{ transform:translateY(0); transition:transform .9s cubic-bezier(.16,1,.3,1); }
+  .specimen.loaded .hero-title .line:nth-child(2) .line-inner{ transition-delay:.09s; }
+  .hero-sub{ max-width:60ch; margin:24px 0 0; font-size:17px; line-height:1.55; opacity:0; }
+  .specimen.loaded .hero-sub{ opacity:.74; transition:opacity .7s cubic-bezier(.16,1,.3,1) .35s; }
+  .hero-count{ margin-top:18px; font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; opacity:.5; }
+  .hero-count b{ color:var(--accent); }
+
+  /* quick nav */
+  .quicknav{ display:flex; flex-wrap:wrap; gap:8px; padding:0 clamp(20px,5vw,56px) clamp(28px,5vw,48px); }
+  .quicknav a{ font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink); text-decoration:none;
+    border:1px solid var(--line-strong); padding:7px 12px; opacity:.7; }
+  .quicknav a:hover{ opacity:1; background:var(--paper-raised); }
+
+  /* featured rows (original 6) */
+  .specimen-row{ border-top:1px solid var(--line); padding:clamp(24px,4vw,44px) clamp(20px,5vw,56px); display:grid; grid-template-columns:180px 1fr; gap:clamp(18px,4vw,40px); }
+  @media (max-width:760px){ .specimen-row{ grid-template-columns:1fr; } }
+  .specimen-meta{ font-family:var(--mono); }
+  .specimen-meta .idx{ font-size:36px; line-height:1; color:var(--accent); font-family:var(--grotesk); font-weight:800; }
+  .specimen-meta .name{ margin-top:8px; font-size:14px; letter-spacing:.02em; font-family: var(--grotesk); font-weight:700; }
+  .specimen-meta .src{ display:block; margin-top:12px; font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; opacity:.5; }
+  .specimen-meta .cost{ display:block; margin-top:6px; font-size:10.5px; opacity:.4; line-height:1.5; }
+  .specimen-stage{ position:relative; min-height:180px; }
+  .reveal-fade{ opacity:0; transform:translateY(16px); transition:opacity .6s cubic-bezier(.16,1,.3,1), transform .6s cubic-bezier(.16,1,.3,1); }
+  .reveal-fade.in-view{ opacity:1; transform:translateY(0); }
+
+  .cursor-targets{ display:flex; flex-wrap:wrap; gap:12px; align-items:center; }
+  .cursor-target{ font-family:var(--grotesk); font-weight:700; font-size:14px; padding:12px 20px; border:1px solid var(--line-strong); background:var(--paper-raised); }
+
+  .skew-track{ display:flex; gap:14px; will-change:transform; }
+  .skew-card{ flex:1 0 130px; height:130px; background:var(--paper-raised); border:1px solid var(--line-strong); display:flex; align-items:flex-end; padding:12px;
+    font-family:var(--mono); font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; opacity:.6; }
+
+  .magnetic-wrap{ display:flex; align-items:center; min-height:160px; }
+  .magnetic-btn{ position:relative; display:inline-flex; align-items:center; justify-content:center; padding:18px 36px; border:1px solid var(--ink);
+    font-family:var(--grotesk); font-weight:700; font-size:15px; background:transparent; color:var(--ink); cursor:none; }
+  .magnetic-btn .btn-inner{ display:inline-block; will-change:transform; }
+
+  .tilt-wrap{ perspective:900px; }
+  .tilt-card{ width:min(320px,100%); aspect-ratio:16/10; background:var(--paper-raised); border:1px solid var(--line-strong); position:relative; overflow:hidden;
+    transform-style:preserve-3d; will-change:transform; }
+  .tilt-glare{ position:absolute; inset:0; opacity:0; transition:opacity .2s; }
+  .tilt-card.is-hover .tilt-glare{ opacity:1; }
+  .tilt-label{ position:absolute; left:16px; bottom:14px; font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; opacity:.55; transform:translateZ(30px); }
+
+  .scramble-word{ font-family:var(--grotesk); font-weight:800; font-size:clamp(26px,4.5vw,46px); letter-spacing:-.02em; cursor:none; }
+  .scramble-hint{ margin-top:8px; font-family:var(--mono); font-size:10.5px; opacity:.45; text-transform:uppercase; letter-spacing:.06em; }
+
+  /* ---- catalog sections ---- */
+  .cat-section{ border-top:1px solid var(--line-strong); padding:clamp(32px,5vw,56px) clamp(20px,5vw,56px); }
+  .cat-head{ display:flex; flex-wrap:wrap; justify-content:space-between; align-items:baseline; gap:10px; margin-bottom:22px; }
+  .cat-head h2{ font-family:var(--grotesk); font-weight:800; font-size:clamp(20px,3vw,30px); letter-spacing:-.02em; margin:0; }
+  .cat-head .cat-src{ font-family:var(--mono); font-size:10.5px; opacity:.5; text-transform:uppercase; letter-spacing:.06em; }
+
+  .swatch-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:12px; }
+  .swatch{ border:1px solid var(--line-strong); background:var(--paper-raised); padding:12px; display:flex; flex-direction:column; gap:8px; }
+  .swatch.wide{ grid-column:span 2; }
+  @media (max-width:480px){ .swatch.wide{ grid-column:span 1; } }
+  .sw-num{ font-family:var(--mono); font-size:9.5px; opacity:.45; }
+  .sw-name{ font-family:var(--grotesk); font-weight:700; font-size:12.5px; line-height:1.3; }
+  .sw-stage{ position:relative; height:108px; overflow:hidden; background:var(--paper); border:1px solid var(--line); display:flex; align-items:center; justify-content:center; }
+  .swatch.wide .sw-stage{ height:150px; }
+  .sw-note{ font-family:var(--mono); font-size:9px; opacity:.42; line-height:1.4; }
+
+  .note-card, .skip-card{ border:1px dashed var(--line-strong); padding:12px; font-family:var(--mono); font-size:10.5px; opacity:.6; line-height:1.5; }
+  .skip-card{ background:repeating-linear-gradient(135deg, transparent, transparent 7px, var(--line) 7px, var(--line) 8px); }
+  .skip-card b{ color:var(--accent); opacity:1; }
+
+  /* generic small ui bits used inside swatches */
+  .mini-btn{ font-family:var(--mono); font-size:9.5px; text-transform:uppercase; letter-spacing:.04em; padding:5px 8px; border:1px solid var(--line-strong); background:var(--paper); cursor:none; }
+  .mini-row{ display:flex; gap:6px; flex-wrap:wrap; }
+  canvas{ display:block; }
+
+  .scroll-box{ height:150px; overflow-y:auto; border:1px solid var(--line); background:var(--paper); scrollbar-width:thin; }
+  .scroll-box-inner{ }
+  .sticky-card{ position:sticky; top:0; padding:14px; font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; }
+  .hscroll{ display:flex; gap:10px; overflow-x:auto; scroll-snap-type:x mandatory; height:100%; align-items:stretch; }
+  .hscroll > div{ flex:0 0 70%; scroll-snap-align:start; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:11px; }
+
+  .text-link-demo{ font-family:var(--grotesk); font-weight:700; font-size:13px; display:flex; flex-direction:column; gap:10px; }
+  .tl1{ position:relative; display:inline-block; width:max-content; }
+  .tl1::after{ content:''; position:absolute; left:0; bottom:-2px; width:0; height:1px; background:var(--ink); transition:width .3s cubic-bezier(.16,1,.3,1); }
+  .tl1:hover::after{ width:100%; }
+  .tl2{ background:linear-gradient(90deg, var(--ink) 0 50%, color-mix(in srgb, var(--ink) 40%, transparent) 50%); background-size:200% 100%; background-position:0 0;
+    -webkit-background-clip:text; background-clip:text; color:transparent; transition:background-position .35s cubic-bezier(.16,1,.3,1); width:max-content; }
+  .tl2:hover{ background-position:-100% 0; }
+  .tl3{ position:relative; display:inline-block; overflow:hidden; width:max-content; height:1.2em; }
+  .tl3 span{ display:block; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+  .tl3 b{ position:absolute; left:0; top:100%; display:block; color:var(--accent); transition:transform .35s cubic-bezier(.16,1,.3,1); }
+  .tl3:hover span{ transform:translateY(-100%); }
+  .tl3:hover b{ transform:translateY(-100%); }
+
+  .flip-card-mini{ width:100%; height:100%; perspective:600px; }
+  .flip-card-mini .fc-inner{ position:relative; width:100%; height:100%; transform-style:preserve-3d; transition:transform .5s cubic-bezier(.16,1,.3,1); }
+  .flip-card-mini:hover .fc-inner{ transform:rotateY(180deg); }
+  .fc-face{ position:absolute; inset:0; backface-visibility:hidden; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:11px; text-transform:uppercase; }
+  .fc-back{ transform:rotateY(180deg); background:var(--accent-soft); }
+
+  .outline-fill{ font-family:var(--grotesk); font-weight:800; font-size:26px; -webkit-text-stroke:1px var(--ink); color:transparent; position:relative; width:max-content; cursor:none; }
+  .outline-fill::after{ content:attr(data-text); position:absolute; inset:0; color:var(--ink); -webkit-text-stroke:0; width:0; overflow:hidden; white-space:nowrap; transition:width .5s cubic-bezier(.16,1,.3,1); }
+  .outline-fill:hover::after{ width:100%; }
+
+  .dock-row{ display:flex; align-items:flex-end; gap:8px; height:70%; }
+  .dock-item{ width:28px; height:28px; background:var(--accent-soft); border:1px solid var(--line-strong); transition:transform .15s cubic-bezier(.16,1,.3,1); flex-shrink:0; }
+
+  .spotlight-grid{ display:grid; grid-template-columns:1fr 1fr; gap:6px; width:100%; height:100%; }
+  .spotlight-cell{ border:1px solid var(--line-strong); background:var(--paper); transition:opacity .2s, border-color .2s; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:9px; opacity:.4; }
+  .spotlight-grid.active .spotlight-cell{ opacity:.25; }
+  .spotlight-grid.active .spotlight-cell.hot{ opacity:1; border-color:var(--accent); }
+
+  .swipe-card{ width:80%; height:80%; background:var(--paper-raised); border:1px solid var(--line-strong); display:flex; align-items:center; justify-content:center;
+    font-family:var(--mono); font-size:10.5px; text-transform:uppercase; touch-action:pan-y; user-select:none; }
+
+  .marquee-wrap{ border-top:1px solid var(--line); overflow:hidden; padding:18px 0; white-space:nowrap; }
+  .marquee-track{ display:inline-flex; will-change:transform; }
+  .marquee-track span{ font-family:var(--grotesk); font-weight:800; font-size:clamp(24px,5vw,52px); letter-spacing:-.02em; padding-right:36px; opacity:.9; }
+  .marquee-track span:nth-child(even){ color:var(--accent); }
+
+  .foot{ display:flex; justify-content:space-between; padding:14px clamp(20px,5vw,56px) 26px; font-family:var(--mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase; opacity:.45; }
+
+  @media (prefers-reduced-motion: reduce){
+    .hero-title .line-inner{ transform:none !important; }
+    .hero-sub{ opacity:.74 !important; transition:none !important; }
+    .reveal-fade{ opacity:1 !important; transform:none !important; }
+  }
+</style>
+
+<div class="specimen" id="specimen">
+  <div class="cursor-dot" id="cursorDot"></div>
+  <div class="cursor-ring" id="cursorRing"><span class="cursor-label" id="cursorLabel"></span></div>
+
+  <header class="topbar">
+    <span class="mark">Fluke Motion</span>
+    <span class="tag" id="topTag">Specimen Sheet</span>
+  </header>
+
+  <section class="hero" id="hero">
+    <h1 class="hero-title">
+      <span class="line"><span class="line-inner">Every technique,</span></span>
+      <span class="line"><span class="line-inner">demonstrated.</span></span>
+    </h1>
+    <p class="hero-sub">Every technique across the fluke-motion reference catalog — including its basic-tier interaction recipes — accounted for. Most built live in vanilla CSS, Canvas 2D and JS, no framework, no CDN. A few genuinely need a WebGL engine, a shipped variable-font asset or a native app shell; those are marked, not faked, and the basic-tier recipes are cross-referenced rather than rebuilt redundantly.</p>
+    <p class="hero-count"><b id="countTotal">0</b> techniques cataloged &nbsp;·&nbsp; <b id="countBuilt">0</b> live &nbsp;·&nbsp; <span id="countNotes">0</span> cross-referenced &nbsp;·&nbsp; <span id="countSkip">0</span> out of scope</p>
+  </section>
+
+  <nav class="quicknav">
+    <a href="#feat">Featured</a><a href="#cat-scroll">Scroll</a><a href="#cat-cursor">Cursor &amp; Hover</a>
+    <a href="#cat-type">Kinetic Type</a><a href="#cat-creative">Creative / SVG / 3D</a><a href="#cat-gen">Generative</a><a href="#cat-core">Core Mechanisms</a>
+    <a href="#cat-story">Storytelling</a><a href="#cat-recipes">Recipes</a>
+  </nav>
+
+  <!-- ============ FEATURED (original 6) ============ -->
+  <div id="feat"></div>
+  <section class="specimen-row">
+    <div class="specimen-meta"><div class="idx">01</div><div class="name">Kinetic Hero Reveal</div><span class="src">storytelling-and-pageload.md</span><span class="cost">This page's own headline. Transform-only, LCP-safe.</span></div>
+    <div class="specimen-stage reveal-fade"><p style="font-family:var(--mono);font-size:12px;opacity:.5;align-self:center;">↑ look up — you already saw it play</p></div>
+  </section>
+
+  <section class="specimen-row">
+    <div class="specimen-meta"><div class="idx">02</div><div class="name">Contextual Cursor</div><span class="src">signature-cursor-hover.md</span><span class="cost">Gated pointer:fine only. This is the cursor tracking you site-wide.</span></div>
+    <div class="specimen-stage reveal-fade"><div class="cursor-targets">
+      <span class="cursor-target" data-cursor="VIEW">Case study</span><span class="cursor-target" data-cursor="DRAG">Gallery</span><span class="cursor-target" data-cursor="PLAY">Showreel</span>
+    </div></div>
+  </section>
+
+  <section class="specimen-row">
+    <div class="specimen-meta"><div class="idx">03</div><div class="name">Velocity Skew</div><span class="src">signature-scroll.md</span><span class="cost">Clamped ±8°, chases scroll velocity, springs to 0° at rest.</span></div>
+    <div class="specimen-stage reveal-fade" style="overflow:hidden;"><div class="skew-track" id="skewTrack">
+      <div class="skew-card">Panel A</div><div class="skew-card">Panel B</div><div class="skew-card">Panel C</div>
+    </div></div>
+  </section>
+
+  <section class="specimen-row">
+    <div class="specimen-meta"><div class="idx">04</div><div class="name">Magnetic Pull</div><span class="src">interaction-recipes.md</span><span class="cost">Inner span translates; hitbox stays fixed for a11y.</span></div>
+    <div class="specimen-stage reveal-fade magnetic-wrap"><button class="magnetic-btn" id="magneticBtn"><span class="btn-inner">Say hello →</span></button></div>
+  </section>
+
+  <section class="specimen-row">
+    <div class="specimen-meta"><div class="idx">05</div><div class="name">3D Tilt + Glare</div><span class="src">creative-effects.md</span><span class="cost">preserve-3d, capped ±10°, glare follows pointer.</span></div>
+    <div class="specimen-stage reveal-fade tilt-wrap"><div class="tilt-card" id="tiltCard"><div class="tilt-glare" id="tiltGlare"></div><span class="tilt-label">Hover to tilt</span></div></div>
+  </section>
+
+  <section class="specimen-row">
+    <div class="specimen-meta"><div class="idx">06</div><div class="name">Scramble / Decode</div><span class="src">kinetic-typography.md</span><span class="cost">Final string length locked before animating — no layout shift.</span></div>
+    <div class="specimen-stage reveal-fade"><div class="scramble-word" id="scrambleWord">HOVER ME</div><div class="scramble-hint">click to re-scramble</div></div>
+  </section>
+
+  <!-- ============ A. SCROLL ============ -->
+  <section class="cat-section" id="cat-scroll">
+    <div class="cat-head"><h2>A · Scroll — 11 techniques</h2><span class="cat-src">signature-scroll.md</span></div>
+    <div class="swatch-grid">
+      <div class="swatch"><span class="sw-num">07</span><span class="sw-name">Sticky stacking cards</span>
+        <div class="sw-stage"><div class="scroll-box" id="sw07"><div style="height:340px;">
+          <div class="sticky-card" style="background:var(--accent-soft);">Card 1</div>
+          <div class="sticky-card" style="background:var(--paper-raised);">Card 2</div>
+          <div class="sticky-card" style="background:var(--accent-soft);">Card 3</div>
+        </div></div></div><span class="sw-note">scroll inside the box — pure CSS position:sticky, no JS</span></div>
+
+      <div class="swatch"><span class="sw-num">08</span><span class="sw-name">Pin-and-cycle gallery</span>
+        <div class="sw-stage"><div class="scroll-box" id="sw08"><div style="height:400px; position:relative;">
+          <div style="position:sticky; top:0; height:108px; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:22px; font-weight:700;" id="sw08label">01</div>
+          <div style="height:100px;" data-cycle="02"></div><div style="height:100px;" data-cycle="03"></div><div style="height:100px;" data-cycle="04"></div>
+        </div></div></div><span class="sw-note">pinned frame cycles a number as chapters pass (IntersectionObserver, scoped)</span></div>
+
+      <div class="swatch"><span class="sw-num">09</span><span class="sw-name">Horizontal section</span>
+        <div class="sw-stage"><div class="hscroll">
+          <div style="background:var(--accent-soft);">01</div><div style="background:var(--paper-raised);">02</div><div style="background:var(--accent-soft);">03</div>
+        </div></div><span class="sw-note">CSS scroll-snap-x — trackpad/touch, page scroll untouched</span></div>
+
+      <div class="swatch"><span class="sw-num">10</span><span class="sw-name">Text highlight on scroll</span>
+        <div class="sw-stage"><div class="scroll-box" id="sw10"><div style="height:280px; padding:10px;">
+          <p id="sw10text" style="font-family:var(--grotesk); font-weight:700; font-size:15px; line-height:1.5;">Scroll to fill this sentence with ink, word by word.</p>
+        </div></div></div><span class="sw-note">gradient clip-text tied to this box's own scrollTop</span></div>
+
+      <div class="swatch"><span class="sw-num">11</span><span class="sw-name">Theme/color transition</span>
+        <div class="sw-stage" id="sw11" style="transition:background .3s;"><div class="scroll-box" id="sw11box"><div style="height:330px;">
+          <div style="height:110px; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:11px;" data-chapter="1">Chapter I</div>
+          <div style="height:110px; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:11px;" data-chapter="2">Chapter II</div>
+          <div style="height:110px; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:11px;" data-chapter="3">Chapter III</div>
+        </div></div></div><span class="sw-note">background retheme per chapter — discrete, not scrubbed</span></div>
+
+      <div class="swatch"><span class="sw-num">12</span><span class="sw-name">SVG path draw on scroll</span>
+        <div class="sw-stage"><div class="scroll-box" id="sw12"><div style="height:260px; display:flex; align-items:center; justify-content:center;">
+          <svg width="90" height="90" viewBox="0 0 90 90"><path id="sw12path" d="M10,45 a35,35 0 1,1 70,0 a35,35 0 1,1 -70,0" fill="none" stroke="currentColor" stroke-width="3"/></svg>
+        </div></div></div><span class="sw-note">stroke-dashoffset mapped to this box's scroll progress</span></div>
+
+      <div class="swatch wide"><span class="sw-num">13</span><span class="sw-name">Reveals beyond fade</span>
+        <div class="sw-stage" id="sw13stage"><div class="mini-row" style="position:absolute; bottom:6px; left:6px; z-index:2;">
+          <button class="mini-btn" data-reveal="curtain">Curtain</button><button class="mini-btn" data-reveal="blur">Blur→focus</button><button class="mini-btn" data-reveal="pixel">Pixelate</button>
+        </div><canvas id="sw13canvas" width="400" height="150"></canvas></div><span class="sw-note">click a mode, replays the reveal on a static frame</span></div>
+
+      <div class="swatch"><span class="sw-num">14</span><span class="sw-name">Progress + counter</span>
+        <div class="sw-stage" style="flex-direction:column; gap:10px;">
+          <div style="width:80%; height:4px; background:var(--line);"><div id="sw14bar" style="height:100%; width:0%; background:var(--accent);"></div></div>
+          <div id="sw14count" style="font-family:var(--mono); font-weight:700; font-size:22px;">0</div>
+        </div><span class="sw-note">bar = real page-scroll progress; number counts up once, on view</span></div>
+
+      <div class="swatch"><span class="sw-num">15</span><span class="sw-name">Hero-to-content morph</span>
+        <div class="sw-stage" id="sw15stage"><div id="sw15thumb" style="width:60px; height:60px; background:var(--accent-soft); border:1px solid var(--line-strong); cursor:none; font-family:var(--mono); font-size:9px; display:flex; align-items:center; justify-content:center;">click</div></div>
+        <span class="sw-note">FLIP-style expand from thumbnail to detail, shared element</span></div>
+
+      <div class="swatch"><span class="sw-num">67</span><span class="sw-name">Elastic / rubber-band scroll</span>
+        <div class="sw-stage"><div class="scroll-box" id="sw67"><div id="sw67inner" style="height:280px; padding-top:10px;">
+          <div style="height:80px; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:10px;">try overscrolling ↑↓</div>
+          <div style="height:80px; background:var(--accent-soft);"></div><div style="height:80px;"></div>
+        </div></div></div><span class="sw-note">bounce-and-spring past the edge — hand-rolled, OS overscroll varies</span></div>
+
+      <div class="swatch"><span class="sw-num">68</span><span class="sw-name">Vertical scroll-snap</span>
+        <div class="sw-stage"><div class="scroll-box" id="sw68" style="scroll-snap-type:y mandatory;"><div>
+          <div style="height:150px; scroll-snap-align:start; display:flex; align-items:center; justify-content:center; background:var(--accent-soft); font-family:var(--mono); font-size:11px;">Section 1</div>
+          <div style="height:150px; scroll-snap-align:start; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:11px;">Section 2</div>
+          <div style="height:150px; scroll-snap-align:start; display:flex; align-items:center; justify-content:center; background:var(--accent-soft); font-family:var(--mono); font-size:11px;">Section 3</div>
+        </div></div></div><span class="sw-note">CSS scroll-snap-type:y — each section locks into place</span></div>
+
+      <div class="swatch"><span class="sw-num">69</span><span class="sw-name">Seamless infinite loop</span>
+        <div class="sw-stage"><canvas id="sw69canvas" width="100" height="100"></canvas></div><span class="sw-note">the loop primitive underneath marquees &amp; carousels — no visible seam</span></div>
+
+      <div class="note-card">Marquee (this category's #2) — see the reactive footer marquee below the fold, or Featured 03's velocity-skew twin.</div>
+      <div class="skip-card"><b>Skipped —</b> WebGL scroll-synced distortion. Needs a real fragment shader + DOM↔GL sync layer; out of scope for a CSP-locked static page.</div>
+    </div>
+  </section>
+
+  <!-- ============ B. CURSOR & HOVER ============ -->
+  <section class="cat-section" id="cat-cursor">
+    <div class="cat-head"><h2>B · Cursor &amp; Hover — 15 techniques</h2><span class="cat-src">signature-cursor-hover.md</span></div>
+    <div class="swatch-grid">
+      <div class="note-card">Dot + trailing ring (#1) — that's the cursor you've had on since you loaded the page. No separate demo needed.</div>
+
+      <div class="swatch"><span class="sw-num">16</span><span class="sw-name">Cursor trail</span>
+        <div class="sw-stage" id="sw16"><canvas id="sw16canvas" width="210" height="108"></canvas></div><span class="sw-note">move fast inside the box — fading dot trail, scoped rAF</span></div>
+
+      <div class="swatch"><span class="sw-num">17</span><span class="sw-name">Blend-invert cursor</span>
+        <div class="sw-stage" id="sw17" style="background:repeating-linear-gradient(90deg, var(--ink) 0 10px, var(--paper) 10px 20px); cursor:none;">
+          <div id="sw17dot" style="position:absolute; width:16px; height:16px; border-radius:999px; background:var(--paper); mix-blend-mode:difference; pointer-events:none;"></div>
+        </div><span class="sw-note">mix-blend-mode:difference — stays legible on any stripe</span></div>
+
+      <div class="swatch"><span class="sw-num">18</span><span class="sw-name">Sticky/morphing cursor</span>
+        <div class="sw-stage" id="sw18"><div id="sw18ring" style="position:absolute; width:18px; height:18px; border:1px solid var(--ink); border-radius:999px; pointer-events:none;"></div>
+          <div class="mini-row"><button class="mini-btn" data-stick="1">A</button><button class="mini-btn" data-stick="1">B</button><button class="mini-btn" data-stick="1">C</button></div>
+        </div><span class="sw-note">ring snaps &amp; locks to whichever button you're near</span></div>
+
+      <div class="swatch"><span class="sw-num">19</span><span class="sw-name">Spotlight reveal</span>
+        <div class="sw-stage" id="sw19" style="background:var(--ink); color:var(--paper); font-family:var(--mono); font-size:10px; text-align:center; padding:8px;">
+          hidden text under the dark — move pointer over
+          <div id="sw19mask" style="position:absolute; inset:0; background:var(--paper); color:var(--ink); -webkit-mask:radial-gradient(circle 40px at -100px -100px, #000 60%, transparent 61%); mask:radial-gradient(circle 40px at -100px -100px, #000 60%, transparent 61%); display:flex; align-items:center; justify-content:center; text-align:center; padding:8px;">hidden text under the dark — move pointer over</div>
+        </div><span class="sw-note">radial mask follows pointer, flashlight-style</span></div>
+
+      <div class="swatch"><span class="sw-num">20</span><span class="sw-name">Gooey cursor</span>
+        <div class="sw-stage" id="sw20">
+          <svg style="position:absolute; width:0; height:0;"><filter id="gooFilter"><feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur"/><feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -9" result="goo"/></filter></svg>
+          <div style="position:absolute; inset:0; filter:url(#gooFilter);">
+            <div id="sw20a" style="position:absolute; width:20px; height:20px; border-radius:999px; background:var(--accent);"></div>
+            <div id="sw20b" style="position:absolute; width:14px; height:14px; border-radius:999px; background:var(--accent);"></div>
+          </div>
+        </div><span class="sw-note">SVG goo filter merges dot + ring into one blob</span></div>
+
+      <div class="swatch"><span class="sw-num">21</span><span class="sw-name">Media follows cursor</span>
+        <div class="sw-stage" id="sw21" style="align-items:flex-start; flex-direction:column; padding:10px; gap:6px;">
+          <div class="mini-btn" data-media="1" style="width:100%; text-align:left;">Project Alpha</div><div class="mini-btn" data-media="1" style="width:100%; text-align:left;">Project Beta</div>
+          <div id="sw21thumb" style="position:absolute; width:50px; height:50px; background:var(--accent-soft); border:1px solid var(--line-strong); pointer-events:none; opacity:0; transition:opacity .15s;"></div>
+        </div><span class="sw-note">thumbnail lerps toward cursor while hovering a row</span></div>
+
+      <div class="swatch"><span class="sw-num">22</span><span class="sw-name">Repel field</span>
+        <div class="sw-stage"><canvas id="sw22canvas" width="210" height="108"></canvas></div><span class="sw-note">dot grid pushes away from the pointer, canvas</span></div>
+
+      <div class="swatch"><span class="sw-num">23</span><span class="sw-name">Image trail</span>
+        <div class="sw-stage" id="sw23"></div><span class="sw-note">move fast — colored blocks spawn along the path, then fade</span></div>
+
+      <div class="swatch"><span class="sw-num">24</span><span class="sw-name">Portfolio list reveal</span>
+        <div class="sw-stage" id="sw24" style="flex-direction:column; align-items:flex-start; padding:8px; gap:4px;">
+          <div class="mini-btn" data-plist="1" style="width:100%;">01 — Editorial</div><div class="mini-btn" data-plist="1" style="width:100%;">02 — Motion reel</div><div class="mini-btn" data-plist="1" style="width:100%;">03 — Brand</div>
+          <div id="sw24thumb" style="position:absolute; width:44px; height:44px; background:var(--accent); opacity:0; pointer-events:none; transition:opacity .12s;"></div>
+        </div><span class="sw-note">row hover = accent block trails the pointer</span></div>
+
+      <div class="swatch"><span class="sw-num">25</span><span class="sw-name">Directional-aware hover</span>
+        <div class="sw-stage" id="sw25" style="overflow:hidden; position:relative; background:var(--paper-raised);">
+          <div id="sw25fill" style="position:absolute; inset:0; background:var(--accent-soft); transform:translateY(100%); transition:transform .35s cubic-bezier(.16,1,.3,1);"></div>
+          <span style="position:relative; font-family:var(--mono); font-size:10px; text-transform:uppercase;">enter from any edge</span>
+        </div><span class="sw-note">fill enters from the edge the pointer actually crossed</span></div>
+
+      <div class="swatch"><span class="sw-name">Text link hovers</span><span class="sw-num" style="order:-1;">26</span>
+        <div class="sw-stage text-link-demo" style="align-items:flex-start; padding:10px; justify-content:center;">
+          <span class="tl1">Underline grow</span><span class="tl2">Gradient sweep</span><span class="tl3"><span>Slide reveal</span><b>Slide reveal</b></span>
+        </div><span class="sw-note">three link-hover crafts, one paragraph</span></div>
+
+      <div class="swatch"><span class="sw-num">27</span><span class="sw-name">Spotlight card grid</span>
+        <div class="sw-stage"><div class="spotlight-grid" id="sw27">
+          <div class="spotlight-cell">A</div><div class="spotlight-cell">B</div><div class="spotlight-cell">C</div><div class="spotlight-cell">D</div>
+        </div></div><span class="sw-note">hovered card glows, siblings dim — not fully hidden</span></div>
+
+      <div class="swatch"><span class="sw-num">28</span><span class="sw-name">Dock magnification</span>
+        <div class="sw-stage"><div class="dock-row" id="sw28">
+          <div class="dock-item"></div><div class="dock-item"></div><div class="dock-item"></div><div class="dock-item"></div><div class="dock-item"></div><div class="dock-item"></div>
+        </div></div><span class="sw-note">scale falls off with distance from pointer, macOS-style</span></div>
+    </div>
+  </section>
+
+  <!-- ============ C. KINETIC TYPOGRAPHY ============ -->
+  <section class="cat-section" id="cat-type">
+    <div class="cat-head"><h2>C · Kinetic Typography — 14 techniques</h2><span class="cat-src">kinetic-typography.md</span></div>
+    <div class="swatch-grid">
+      <div class="note-card">Scramble/decode (#1) — built as Featured 06 above.</div>
+
+      <div class="swatch"><span class="sw-num">29</span><span class="sw-name">Typewriter</span>
+        <div class="sw-stage" id="sw29" style="font-family:var(--mono); font-size:14px; cursor:pointer;"></div><span class="sw-note">click to retype · blinking caret</span></div>
+
+      <div class="swatch"><span class="sw-num">30</span><span class="sw-name">Text on a path</span>
+        <div class="sw-stage"><svg width="100" height="100" viewBox="0 0 100 100" id="sw30svg">
+          <path id="sw30path" d="M50,50 m-35,0 a35,35 0 1,1 70,0 a35,35 0 1,1 -70,0" fill="none"/>
+          <text font-size="9" font-family="monospace" letter-spacing="2"><textPath href="#sw30path">MOTION IS THE MATERIAL — </textPath></text>
+        </svg></div><span class="sw-note">rotates continuously, springs to a stop on hover</span></div>
+
+      <div class="swatch"><span class="sw-num">31</span><span class="sw-name">Pseudo-3D extruded text</span>
+        <div class="sw-stage" style="background:var(--ink); color:var(--paper);"><span id="sw31" style="font-family:var(--grotesk); font-weight:800; font-size:26px;">3D</span></div>
+        <span class="sw-note">approximation — layered text-shadow, not true WebGL geometry</span></div>
+
+      <div class="swatch"><span class="sw-num">32</span><span class="sw-name">Character physics</span>
+        <div class="sw-stage" id="sw32" style="cursor:pointer;"><canvas id="sw32canvas" width="210" height="108"></canvas></div><span class="sw-note">click — letters fall apart under simple gravity</span></div>
+
+      <div class="swatch"><span class="sw-num">33</span><span class="sw-name">Text distortion shader</span>
+        <div class="sw-stage">
+          <svg style="position:absolute; width:0; height:0;"><filter id="turbFilter"><feTurbulence id="sw33turb" type="fractalNoise" baseFrequency="0.01" numOctaves="2" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="8"/></filter></svg>
+          <span style="font-family:var(--grotesk); font-weight:800; font-size:24px; filter:url(#turbFilter);">LIQUID</span>
+        </div><span class="sw-note">approximation — SVG feTurbulence, not a real fragment shader</span></div>
+
+      <div class="swatch"><span class="sw-num">34</span><span class="sw-name">Reveal variations</span>
+        <div class="sw-stage" id="sw34stage"><span id="sw34word" style="font-family:var(--grotesk); font-weight:800; font-size:22px;">REVEAL</span>
+          <div class="mini-row" style="position:absolute; bottom:4px; left:4px;"><button class="mini-btn" data-rv="fade">Fade</button><button class="mini-btn" data-rv="slide">Slide</button><button class="mini-btn" data-rv="mask">Mask</button><button class="mini-btn" data-rv="blur">Blur</button></div>
+        </div><span class="sw-note">cycles the four common reveal families on demand</span></div>
+
+      <div class="swatch"><span class="sw-name">Wavy text</span><span class="sw-num" style="order:-1;">35</span>
+        <div class="sw-stage" id="sw35" style="font-family:var(--grotesk); font-weight:800; font-size:22px;">WAVY</div><span class="sw-note">idle ambient sine-wave per letter, always running</span></div>
+
+      <div class="swatch"><span class="sw-num">36</span><span class="sw-name">Shimmer sweep</span>
+        <div class="sw-stage"><span id="sw36" style="font-family:var(--grotesk); font-weight:800; font-size:24px; background:linear-gradient(100deg, var(--ink) 40%, var(--accent) 50%, var(--ink) 60%); background-size:250% 100%; -webkit-background-clip:text; background-clip:text; color:transparent;">SHIMMER</span></div>
+        <span class="sw-note">gradient sweeps across on a loop</span></div>
+
+      <div class="swatch"><span class="sw-num">37</span><span class="sw-name">Split-flap board</span>
+        <div class="sw-stage" id="sw37" style="gap:3px;"></div><span class="sw-note">airport-board character flip, click to re-roll</span></div>
+
+      <div class="swatch"><span class="sw-num">38</span><span class="sw-name">Outline → fill</span>
+        <div class="sw-stage"><span class="outline-fill" data-text="FILL">FILL</span></div><span class="sw-note">hover — stroke-only text fills in, self-drawing feel</span></div>
+
+      <div class="swatch"><span class="sw-num">77</span><span class="sw-name">Digit / odometer roll</span>
+        <div class="sw-stage" id="sw77" style="cursor:pointer;"></div><span class="sw-note">click — each digit reels vertically to its new value</span></div>
+
+      <div class="skip-card"><b>Skipped —</b> Variable font axis animation. Needs a variable-font asset shipped with the page; system fonts don't reliably expose weight/width axes.</div>
+      <div class="note-card">Marquee type (#8) — see the reactive footer marquee.</div>
+    </div>
+  </section>
+
+  <!-- ============ D. CREATIVE / SVG / 3D ============ -->
+  <section class="cat-section" id="cat-creative">
+    <div class="cat-head"><h2>D · Creative, SVG &amp; 3D — 7 techniques</h2><span class="cat-src">creative-effects.md</span></div>
+    <div class="swatch-grid">
+      <div class="swatch"><span class="sw-num">39</span><span class="sw-name">SVG line drawing</span>
+        <div class="sw-stage reveal-fade" id="sw39stage"><svg width="70" height="70" viewBox="0 0 70 70"><path id="sw39path" d="M10,35 L28,55 L60,15" fill="none" stroke="var(--accent)" stroke-width="5" stroke-linecap="round"/></svg></div>
+        <span class="sw-note">check icon draws on scroll into view</span></div>
+
+      <div class="swatch"><span class="sw-num">40</span><span class="sw-name">SVG path morphing</span>
+        <div class="sw-stage"><svg width="80" height="80" viewBox="0 0 80 80"><path id="sw40path" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/></svg></div>
+        <span class="sw-note">blob interpolates between two path shapes, looping</span></div>
+
+      <div class="swatch"><span class="sw-num">41</span><span class="sw-name">Animated icon</span>
+        <div class="sw-stage" id="sw41" style="cursor:pointer;"><svg width="30" height="30" viewBox="0 0 24 24" id="sw41heart"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0112 5a5.5 5.5 0 019.5 7c-2.5 4.5-9.5 9-9.5 9z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></div>
+        <span class="sw-note">click — burst micro-interaction, common component pattern</span></div>
+
+      <div class="swatch"><span class="sw-num">42</span><span class="sw-name">Gooey blob merge</span>
+        <div class="sw-stage" id="sw42">
+          <svg style="position:absolute; width:0; height:0;"><filter id="gooFilter2"><feGaussianBlur in="SourceGraphic" stdDeviation="7" result="b"/><feColorMatrix in="b" mode="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 24 -10"/></filter></svg>
+          <div style="position:absolute; inset:0; filter:url(#gooFilter2);">
+            <div id="sw42a" style="position:absolute; width:36px; height:36px; border-radius:999px; background:var(--accent); left:30%; top:40%;"></div>
+            <div id="sw42b" style="position:absolute; width:26px; height:26px; border-radius:999px; background:var(--accent); left:55%; top:45%;"></div>
+          </div>
+        </div><span class="sw-note">two shapes breathing in/out — gooey merge on approach</span></div>
+
+      <div class="swatch"><span class="sw-num">43</span><span class="sw-name">3D flip card</span>
+        <div class="sw-stage"><div class="flip-card-mini"><div class="fc-inner"><div class="fc-face">Front</div><div class="fc-face fc-back">Back</div></div></div></div>
+        <span class="sw-note">rotateY(180°) on hover — pairs with Featured 05's tilt</span></div>
+
+      <div class="swatch"><span class="sw-num">approx</span><span class="sw-name">Shader image distortion</span>
+        <div class="sw-stage" id="sw44" style="background:var(--accent-soft); transition:filter .3s, transform .3s;"></div>
+        <span class="sw-note">approximation — CSS filter pulse standing in for a WebGL displacement hover</span></div>
+
+      <div class="swatch"><span class="sw-num">70</span><span class="sw-name">Slider / gl-transition</span>
+        <div class="sw-stage" id="sw70" style="cursor:pointer; overflow:hidden;">
+          <div style="position:absolute; inset:0; background:var(--accent-soft);"></div>
+          <div id="sw70wipe" style="position:absolute; inset:0; background:var(--paper-raised); clip-path:polygon(0 0,0 0,0 100%,0 100%);"></div>
+          <span style="position:relative; font-family:var(--mono); font-size:10px;">click to wipe</span>
+        </div><span class="sw-note">approximation of gl-transitions — CSS clip-path wipe, not a real GLSL slider</span></div>
+
+      <div class="swatch"><span class="sw-num">71</span><span class="sw-name">Liquid gradient blob</span>
+        <div class="sw-stage" id="sw71"></div><span class="sw-note">approximation — layered blurred radial-gradients drifting, not a WebGL fluid shader</span></div>
+
+      <div class="swatch"><span class="sw-num">72</span><span class="sw-name">Depth inside a card</span>
+        <div class="sw-stage" id="sw72" style="overflow:hidden;">
+          <div id="sw72back" style="position:absolute; width:70px; height:70px; border-radius:999px; background:var(--accent-soft);"></div>
+          <span id="sw72front" style="position:relative; font-family:var(--mono); font-weight:700; font-size:14px;">DEPTH</span>
+        </div><span class="sw-note">two layers shift at different rates on pointer move — one card, real depth</span></div>
+
+      <div class="note-card">SVG performance (#5) is a guidance section, not an effect — inline sanitize, avoid filters on many nodes, prefer CSS transforms over SMIL.</div>
+    </div>
+  </section>
+
+  <!-- ============ E. GENERATIVE / INTERACTIVE ============ -->
+  <section class="cat-section" id="cat-gen">
+    <div class="cat-head"><h2>E · Generative &amp; Interactive — 15 techniques</h2><span class="cat-src">generative-interactive.md</span></div>
+    <div class="swatch-grid">
+      <div class="skip-card"><b>Skipped —</b> WebGL fluid simulation (GPU Navier-Stokes). Genuine implementation needs ping-pong framebuffers and custom fragment shaders — a dedicated build, not a swatch.</div>
+
+      <div class="swatch"><span class="sw-num">44</span><span class="sw-name">CPU particle field</span>
+        <div class="sw-stage"><canvas id="sw45canvas" width="210" height="108"></canvas></div><span class="sw-note">CPU approximation of GPGPU particles — hundreds, not millions</span></div>
+
+      <div class="swatch"><span class="sw-num">45</span><span class="sw-name">Constellation network</span>
+        <div class="sw-stage"><canvas id="sw46canvas" width="210" height="108"></canvas></div><span class="sw-note">nodes connect when near; pointer repels</span></div>
+
+      <div class="swatch"><span class="sw-num">46</span><span class="sw-name">Metaballs</span>
+        <div class="sw-stage" id="sw47">
+          <svg style="position:absolute; width:0; height:0;"><filter id="gooFilter3"><feGaussianBlur in="SourceGraphic" stdDeviation="8" result="b"/><feColorMatrix in="b" mode="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 26 -11"/></filter></svg>
+          <div style="position:absolute; inset:0; filter:url(#gooFilter3);" id="sw47field"></div>
+        </div><span class="sw-note">three blobs orbit and merge — goo-filter metaball technique</span></div>
+
+      <div class="swatch"><span class="sw-num">47</span><span class="sw-name">Reactive dot grid</span>
+        <div class="sw-stage"><canvas id="sw48canvas" width="210" height="108"></canvas></div><span class="sw-note">dots brighten &amp; scale near the pointer</span></div>
+
+      <div class="swatch"><span class="sw-num">48</span><span class="sw-name">ASCII rendering</span>
+        <div class="sw-stage" style="background:var(--ink);"><canvas id="sw49canvas" width="210" height="108"></canvas></div><span class="sw-note">brightness-to-character mapping of a moving gradient</span></div>
+
+      <div class="swatch"><span class="sw-num">49</span><span class="sw-name">Halftone / dithering</span>
+        <div class="sw-stage"><canvas id="sw50canvas" width="210" height="108"></canvas></div><span class="sw-note">dot size follows luminance of a radial gradient</span></div>
+
+      <div class="swatch"><span class="sw-num">50</span><span class="sw-name">Grain / glitch / aberration</span>
+        <div class="sw-stage" id="sw51" style="cursor:pointer;">
+          <canvas id="sw51canvas" width="210" height="108" style="position:absolute; inset:0; opacity:.5; mix-blend-mode:overlay;"></canvas>
+          <span id="sw51text" style="font-family:var(--grotesk); font-weight:800; font-size:20px; position:relative;">GLITCH</span>
+        </div><span class="sw-note">canvas static + click for an RGB-split glitch pulse</span></div>
+
+      <div class="swatch"><span class="sw-num">51</span><span class="sw-name">Pixelation / duotone</span>
+        <div class="sw-stage" id="sw52"><canvas id="sw52canvas" width="210" height="108" style="filter:contrast(1.3);"></canvas></div>
+        <span class="sw-note">hover to pixelate; duotone via canvas 2-color remap</span></div>
+
+      <div class="swatch"><span class="sw-num">52</span><span class="sw-name">Physics playground</span>
+        <div class="sw-stage"><canvas id="sw53canvas" width="210" height="108"></canvas></div><span class="sw-note">balls under gravity, drag to throw, walls bound the chaos</span></div>
+
+      <div class="swatch"><span class="sw-num">53</span><span class="sw-name">Infinite draggable canvas</span>
+        <div class="sw-stage" id="sw54" style="cursor:grab; overflow:hidden;"><div id="sw54inner" style="position:absolute; width:400px; height:400px; background-image: repeating-linear-gradient(0deg, var(--line) 0 1px, transparent 1px 40px), repeating-linear-gradient(90deg, var(--line) 0 1px, transparent 1px 40px);"></div></div>
+        <span class="sw-note">drag to pan, momentum decay on release</span></div>
+
+      <div class="swatch"><span class="sw-num">54</span><span class="sw-name">Inertia carousel</span>
+        <div class="sw-stage" id="sw55" style="overflow:hidden; cursor:grab;"><div id="sw55track" style="display:flex; gap:8px; position:absolute; left:0;">
+          <div style="width:60px; height:60px; background:var(--accent-soft); flex-shrink:0;"></div><div style="width:60px; height:60px; background:var(--paper-raised); border:1px solid var(--line-strong); flex-shrink:0;"></div>
+          <div style="width:60px; height:60px; background:var(--accent-soft); flex-shrink:0;"></div><div style="width:60px; height:60px; background:var(--paper-raised); border:1px solid var(--line-strong); flex-shrink:0;"></div>
+        </div></div><span class="sw-note">drag, release with velocity — coasts and decelerates</span></div>
+
+      <div class="swatch"><span class="sw-num">55</span><span class="sw-name">Depth-map parallax</span>
+        <div class="sw-stage" id="sw56" style="overflow:hidden;">
+          <div id="sw56back" style="position:absolute; inset:-20px; background:radial-gradient(circle at 30% 30%, var(--line-strong), transparent 60%);"></div>
+          <div id="sw56mid" style="position:absolute; inset:-14px; background:radial-gradient(circle at 70% 60%, var(--accent-soft), transparent 55%);"></div>
+          <div id="sw56front" style="position:relative; font-family:var(--mono); font-size:10px; text-transform:uppercase;">3 flat layers</div>
+        </div><span class="sw-note">approximation — layered flats at different rates, no real depth map</span></div>
+
+      <div class="skip-card"><b>Skipped —</b> Interactive 3D (Spline/R3F) &amp; Scroll 3D. Both need a real 3D engine — Artifact's CSP blocks the CDN scripts a Three.js/R3F scene would require.</div>
+    </div>
+  </section>
+
+  <!-- ============ F. CORE MECHANISMS ============ -->
+  <section class="cat-section" id="cat-core">
+    <div class="cat-head"><h2>F · Core Mechanisms — 8 techniques</h2><span class="cat-src">advanced-techniques.md</span></div>
+    <div class="swatch-grid">
+      <div class="swatch"><span class="sw-num">56</span><span class="sw-name">Parallax</span>
+        <div class="sw-stage" id="sw57" style="overflow:hidden;">
+          <div id="sw57back" style="position:absolute; inset:-30px; background:repeating-linear-gradient(45deg, var(--line) 0 8px, transparent 8px 16px);"></div>
+          <span style="position:relative; font-family:var(--mono); font-size:10px;">scroll the page</span>
+        </div><span class="sw-note">background layer moves slower than the page — real page-scroll, not hijacked</span></div>
+
+      <div class="swatch"><span class="sw-num">57</span><span class="sw-name">Native scroll-driven anim</span>
+        <div class="sw-stage" id="sw58" style="overflow:hidden;"><div id="sw58bar" style="width:6px; background:var(--accent); align-self:stretch;"></div></div>
+        <span class="sw-note">CSS animation-timeline:scroll() where supported, JS fallback otherwise</span></div>
+
+      <div class="swatch"><span class="sw-num">58</span><span class="sw-name">Spring physics</span>
+        <div class="sw-stage" id="sw59" style="cursor:grab;"><div id="sw59ball" style="width:26px; height:26px; border-radius:999px; background:var(--accent); position:absolute;"></div></div>
+        <span class="sw-note">drag the ball, release — springs back and overshoots once</span></div>
+
+      <div class="swatch"><span class="sw-num">59</span><span class="sw-name">FLIP shuffle</span>
+        <div class="sw-stage" id="sw60" style="flex-wrap:wrap; gap:6px; padding:8px;">
+          <div class="mini-btn" data-flip-id="1" style="width:38px; height:38px;">1</div><div class="mini-btn" data-flip-id="2" style="width:38px; height:38px;">2</div>
+          <div class="mini-btn" data-flip-id="3" style="width:38px; height:38px;">3</div><div class="mini-btn" data-flip-id="4" style="width:38px; height:38px;">4</div>
+          <button class="mini-btn" id="sw60shuffle" style="position:absolute; bottom:6px; right:6px;">Shuffle</button>
+        </div><span class="sw-note">first/last measure + inverted transform, classic FLIP</span></div>
+
+      <div class="swatch"><span class="sw-num">60</span><span class="sw-name">Gesture swipe card</span>
+        <div class="sw-stage" id="sw61"><div class="swipe-card" id="sw61card">drag me →</div></div>
+        <span class="sw-note">velocity-based dismiss or spring back, Tinder-style</span></div>
+
+      <div class="swatch"><span class="sw-num">73</span><span class="sw-name">IntersectionObserver baseline</span>
+        <div class="sw-stage reveal-fade" style="background:var(--accent-soft);">the primitive under every reveal here</div>
+        <span class="sw-note">one-shot fade+rise on first view — no library, this is the floor everything else builds on</span></div>
+
+      <div class="swatch"><span class="sw-num">74</span><span class="sw-name">Scroll-scrub (GSAP-style)</span>
+        <div class="sw-stage" id="sw74" style="overflow:hidden;"><div id="sw74dial" style="width:50px; height:50px; border-radius:999px; border:3px solid var(--accent); border-right-color:transparent;"></div></div>
+        <span class="sw-note">approximation — plain scroll listener mapping progress to rotation, standing in for ScrollTrigger's scrub</span></div>
+
+      <div class="swatch"><span class="sw-num">75</span><span class="sw-name">Canvas image-sequence scroll</span>
+        <div class="sw-stage"><div class="scroll-box" id="sw75"><div style="height:400px;"><canvas id="sw75canvas" width="200" height="108" style="position:sticky; top:0;"></canvas></div></div></div>
+        <span class="sw-note">procedural frames drawn per scroll progress — the Apple-AirPods scrub technique, generated not pre-rendered</span></div>
+
+      <div class="swatch"><span class="sw-num">76</span><span class="sw-name">Lerp-based smooth scroll</span>
+        <div class="sw-stage" id="sw76" style="overflow:hidden;"><div id="sw76track">
+          <div style="height:60px; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:10px;">scroll (wheel) here</div>
+          <div style="height:60px; background:var(--accent-soft);"></div><div style="height:60px;"></div><div style="height:60px; background:var(--accent-soft);"></div>
+        </div></div><span class="sw-note">Lenis-style — wheel delta accumulates a target, content lerps toward it, scoped locally</span></div>
+
+      <div class="note-card">Orchestration &amp; choreography (#5) — embodied by this whole page: one shared rAF, one lerp constant (0.16), motion tokens in the CSS variables above.</div>
+      <div class="note-card">Showpieces (#6) is a meta-category pointing at the Featured specimens above, not a distinct technique.</div>
+      <div class="note-card">Browser support &amp; library landscape (#8) is a reference table, not a demo — see advanced-techniques.md directly.</div>
+    </div>
+  </section>
+
+  <!-- ============ G. STORYTELLING & PAGE LOAD ============ -->
+  <section class="cat-section" id="cat-story">
+    <div class="cat-head"><h2>G · Storytelling &amp; Page Load — 10 techniques</h2><span class="cat-src">storytelling-and-pageload.md</span></div>
+    <div class="swatch-grid">
+      <div class="swatch"><span class="sw-num">61</span><span class="sw-name">Pinned scene (scrollytelling)</span>
+        <div class="sw-stage"><div class="scroll-box" id="sw61s"><div style="height:400px; position:relative;">
+          <div style="position:sticky; top:0; height:108px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;">
+            <span id="sw61sBeat" style="font-family:var(--mono); font-weight:700; font-size:13px;">Beat I</span>
+            <div style="display:flex; gap:4px;" id="sw61sDots"><span style="width:5px;height:5px;border-radius:999px;background:var(--accent);"></span><span style="width:5px;height:5px;border-radius:999px;background:var(--line-strong);"></span><span style="width:5px;height:5px;border-radius:999px;background:var(--line-strong);"></span></div>
+          </div>
+          <div style="height:100px;" data-beat="Beat I"></div><div style="height:100px;" data-beat="Beat II"></div><div style="height:100px;" data-beat="Beat III"></div>
+        </div></div></div><span class="sw-note">scroll distance converted to narrative time — dwell per beat, like film editing</span></div>
+
+      <div class="swatch"><span class="sw-num">62</span><span class="sw-name">Scene crossfade</span>
+        <div class="sw-stage" id="sw62"><div class="scroll-box" id="sw62box"><div style="height:300px;">
+          <div id="sw62a" style="position:sticky; top:0; height:108px; background:var(--accent-soft); display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:10px;">Scene A</div>
+        </div></div></div><span class="sw-note">background opacity crossfades continuously with this box's scroll progress</span></div>
+
+      <div class="swatch"><span class="sw-num">63</span><span class="sw-name">Preloader curtain replay</span>
+        <div class="sw-stage" id="sw63" style="cursor:pointer;">
+          <button class="mini-btn" id="sw63btn">Simulate reload</button>
+          <div id="sw63curtain" style="position:absolute; inset:0; background:var(--ink); color:var(--paper); display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:12px; transform:translateY(-100%);">AB</div>
+        </div><span class="sw-note">curtain plays once, scoped to this box — not a real page reload</span></div>
+
+      <div class="swatch"><span class="sw-num">64</span><span class="sw-name">Font-gated hero entrance</span>
+        <div class="sw-stage" id="sw64">
+          <button class="mini-btn" id="sw64btn" style="position:absolute; bottom:4px; right:4px;">Simulate slow fonts</button>
+          <span id="sw64text" style="font-family:var(--grotesk); font-weight:800; font-size:20px; opacity:0;">Ready</span>
+        </div><span class="sw-note">hero stays hidden until fonts are ready — real document.fonts.ready, delay simulated on click</span></div>
+
+      <div class="swatch"><span class="sw-num">65</span><span class="sw-name">Page / route transition</span>
+        <div class="sw-stage" id="sw65">
+          <button class="mini-btn" id="sw65btn">Navigate</button>
+          <span id="sw65label" style="position:absolute; bottom:4px; left:4px; font-family:var(--mono); font-size:9px; opacity:.5;"></span>
+          <div id="sw65content" style="font-family:var(--mono); font-size:12px;">Page A</div>
+        </div><span class="sw-note">uses the real View Transitions API when supported, falls back to a manual crossfade — label shows which ran</span></div>
+
+      <div class="swatch"><span class="sw-num">66</span><span class="sw-name">Session-aware intro</span>
+        <div class="sw-stage" id="sw66" style="flex-direction:column; gap:8px;">
+          <span id="sw66flag" style="font-family:var(--mono); font-size:11px;"></span>
+          <button class="mini-btn" id="sw66btn">Reset session flag</button>
+        </div><span class="sw-note">sessionStorage-gated — an intro that plays once per tab session, scoped to this swatch</span></div>
+
+      <div class="note-card">Tool choice (#2) is a decision table (native CSS vs GSAP vs Lenis), not a single demo.</div>
+      <div class="note-card">The scrolljacking line (#4) — a warning, not an effect: hijacking native scroll for a section with nothing responding in the first 100–200px reads as "scroll broken."</div>
+      <div class="note-card">Mobile &amp; accessibility (#5) — guidance folded into every swatch above via prefers-reduced-motion, not a separate demo.</div>
+      <div class="note-card">LCP/CLS constraints (#8) — the reasoning behind every masked (not faded) hero reveal on this page; see Featured 01.</div>
+    </div>
+  </section>
+
+  <!-- ============ H. INTERACTION RECIPES (basic tier — catalogued, not rebuilt) ============ -->
+  <section class="cat-section" id="cat-recipes">
+    <div class="cat-head"><h2>H · Interaction Recipes — 11 topics</h2><span class="cat-src">interaction-recipes.md</span></div>
+    <div class="swatch-grid">
+      <div class="note-card">Buttons (press/loading-morph) — see Featured 04's magnetic pull for the craft version.</div>
+      <div class="note-card">Like burst, checkbox, toggle — same micro-interaction family as Creative #41's animated icon.</div>
+      <div class="note-card">Inputs: float label, error shake — standard component recipe, not rebuilt as a separate swatch.</div>
+      <div class="note-card">Toasts (Sonner stacking pattern) — standard component recipe, not rebuilt as a separate swatch.</div>
+      <div class="note-card">Dropdown, popover, tooltip choreography — standard component recipe, not rebuilt as a separate swatch.</div>
+      <div class="note-card">Tabs, accordion, reorder, icon swap — reorder shares FLIP's mechanism, see Core #59.</div>
+      <div class="note-card">Skeletons &amp; spinners — shimmer technique, same gradient-sweep family as Kinetic #36.</div>
+      <div class="note-card">Progress bars &amp; counters — built as Scroll #14.</div>
+      <div class="note-card">Staggered entrance &amp; pull-to-refresh — stagger used throughout this page's own reveals.</div>
+      <div class="note-card">Celebrations &amp; empty states — component-level polish, not a distinct motion technique.</div>
+      <div class="note-card">Defaults table — a reference table of values, not an effect.</div>
+    </div>
+    <p style="margin-top:16px; font-family:var(--mono); font-size:10.5px; opacity:.5;">This tier is deliberately restrained per this skill's own calibration rules — product-UI micro-interactions, not signature moments. Catalogued for completeness, not independently rebuilt.</p>
+  </section>
+
+  <footer class="marquee-wrap">
+    <div class="marquee-track" id="marqueeTrack">
+      <span>ONE CLOCK</span><span>ONE LERP</span><span>ONE SCROLL AUTHORITY</span><span>ONE CLOCK</span><span>ONE LERP</span><span>ONE SCROLL AUTHORITY</span>
+    </div>
+  </footer>
+  <div class="foot"><span>fluke-motion / complete catalog</span><span id="reducedFlag">motion: on</span></div>
+</div>
+
+<script>
+(function(){
+  var root = document.getElementById('specimen');
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.getElementById('reducedFlag').textContent = reduced ? 'motion: reduced' : 'motion: on';
+  var builtCount = document.querySelectorAll('.swatch:not(.note-card):not(.skip-card)').length + 6; /* +6 featured */
+  var noteCount = document.querySelectorAll('.note-card').length;
+  var skipCount = document.querySelectorAll('.skip-card').length;
+  var totalCount = builtCount + noteCount + skipCount;
+  document.getElementById('countTotal').textContent = totalCount;
+  document.getElementById('countBuilt').textContent = builtCount;
+  document.getElementById('countNotes').textContent = noteCount;
+  document.getElementById('countSkip').textContent = skipCount;
+  document.getElementById('topTag').textContent = totalCount + ' cataloged · ' + builtCount + ' live';
+
+  requestAnimationFrame(function(){ root.classList.add('loaded'); });
+
+  var io = new IntersectionObserver(function(entries){ entries.forEach(function(e){ if (e.isIntersecting) e.target.classList.add('in-view'); }); }, { threshold:.2 });
+  document.querySelectorAll('.reveal-fade').forEach(function(el){ io.observe(el); });
+
+  if (reduced) return; /* everything below is decorative/interactive motion — skip entirely */
+
+  var clamp = function(v,lo,hi){ return Math.max(lo, Math.min(hi, v)); };
+  var lerp = function(a,b,t){ return a + (b-a)*t; };
+  var LERP = 0.16; /* one shared lerp constant — "one material" */
+  var tickers = [];
+
+  /* ---- shared pointer ---- */
+  var mouseX=-100, mouseY=-100;
+  window.addEventListener('pointermove', function(e){ mouseX=e.clientX; mouseY=e.clientY; }, {passive:true});
+
+  /* ================= CURSOR ================= */
+  var dot=document.getElementById('cursorDot'), ring=document.getElementById('cursorRing'), label=document.getElementById('cursorLabel');
+  var ringX=-100, ringY=-100;
+  document.querySelectorAll('[data-cursor]').forEach(function(el){
+    el.addEventListener('pointerenter', function(){ ring.classList.add('is-active'); label.textContent = el.getAttribute('data-cursor'); });
+    el.addEventListener('pointerleave', function(){ ring.classList.remove('is-active'); label.textContent=''; });
+  });
+  tickers.push(function(){
+    ringX+=(mouseX-ringX)*LERP; ringY+=(mouseY-ringY)*LERP;
+    ring.style.transform='translate('+ringX+'px,'+ringY+'px)'; dot.style.transform='translate('+mouseX+'px,'+mouseY+'px)';
+  });
+
+  /* ================= FEATURED 03: velocity skew ================= */
+  var skewTrack=document.getElementById('skewTrack');
+  var lastY=window.scrollY, skewVel=0, skewCur=0;
+  window.addEventListener('scroll', function(){ var y=window.scrollY; skewVel=clamp((y-lastY)*-1.4,-8,8); lastY=y; }, {passive:true});
+  tickers.push(function(){ skewCur+=(skewVel-skewCur)*LERP; skewVel*=0.9; if(skewTrack) skewTrack.style.transform='skewY('+skewCur.toFixed(2)+'deg)'; });
+
+  /* ================= FEATURED 04: magnetic ================= */
+  var magBtn=document.getElementById('magneticBtn'), magInner=magBtn.querySelector('.btn-inner');
+  var magX=0,magY=0,magTX=0,magTY=0;
+  magBtn.addEventListener('pointermove', function(e){ var r=magBtn.getBoundingClientRect(); magTX=(e.clientX-(r.left+r.width/2))*0.35; magTY=(e.clientY-(r.top+r.height/2))*0.35; });
+  magBtn.addEventListener('pointerleave', function(){ magTX=0; magTY=0; });
+  tickers.push(function(){ magX+=(magTX-magX)*LERP; magY+=(magTY-magY)*LERP; magInner.style.transform='translate('+magX.toFixed(1)+'px,'+magY.toFixed(1)+'px)'; });
+
+  /* ================= FEATURED 05: tilt ================= */
+  var tiltCard=document.getElementById('tiltCard'), tiltGlare=document.getElementById('tiltGlare');
+  var tiltTX=0,tiltTY=0,tiltCX=0,tiltCY=0;
+  tiltCard.addEventListener('pointermove', function(e){
+    var r=tiltCard.getBoundingClientRect(); var px=(e.clientX-r.left)/r.width, py=(e.clientY-r.top)/r.height;
+    tiltTY=(px-0.5)*20; tiltTX=(0.5-py)*20;
+    tiltGlare.style.background='radial-gradient(circle at '+(px*100)+'% '+(py*100)+'%, rgba(255,255,255,.35), transparent 55%)';
+    tiltCard.classList.add('is-hover');
+  });
+  tiltCard.addEventListener('pointerleave', function(){ tiltTX=0; tiltTY=0; tiltCard.classList.remove('is-hover'); });
+  tickers.push(function(){ tiltCX+=(tiltTX-tiltCX)*LERP; tiltCY+=(tiltTY-tiltCY)*LERP; tiltCard.style.transform='rotateX('+tiltCX.toFixed(2)+'deg) rotateY('+tiltCY.toFixed(2)+'deg)'; });
+
+  /* ================= FEATURED 06: scramble ================= */
+  var scrambleEl=document.getElementById('scrambleWord'); var CHARS='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  function scramble(el, FINAL, cb){
+    if (el._scrambling) return; el._scrambling=true;
+    var frame=0, total=16;
+    var iv=setInterval(function(){
+      frame++; var out='';
+      for (var i=0;i<FINAL.length;i++){ if(FINAL[i]===' '){ out+=' '; continue; } var lockAt=(i/FINAL.length)*total;
+        out += frame>lockAt ? FINAL[i] : CHARS[Math.floor(Math.random()*CHARS.length)]; }
+      el.textContent=out;
+      if (frame>=total+4){ clearInterval(iv); el.textContent=FINAL; el._scrambling=false; if(cb) cb(); }
+    }, 40);
+  }
+  scrambleEl.addEventListener('pointerenter', function(){ scramble(scrambleEl,'HOVER ME'); });
+  scrambleEl.addEventListener('click', function(){ scramble(scrambleEl,'HOVER ME'); });
+
+  /* ================= FOOTER MARQUEE (reactive) ================= */
+  var marquee=document.getElementById('marqueeTrack'); var marqueeX=0, baseSpeed=0.6;
+  tickers.push(function(){
+    var speed=baseSpeed+Math.min(Math.abs(skewVel)*0.4,4); marqueeX-=speed;
+    var tw=marquee.scrollWidth/2; if(Math.abs(marqueeX)>=tw) marqueeX=0;
+    marquee.style.transform='translateX('+marqueeX+'px)';
+  });
+
+  /* ================= A. SCROLL CATALOG ================= */
+  /* 08 pin-and-cycle */
+  (function(){
+    var box=document.getElementById('sw08'), lbl=document.getElementById('sw08label');
+    var ioLocal=new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting) lbl.textContent=e.target.getAttribute('data-cycle'); });
+    }, { root:box, threshold:.6 });
+    box.querySelectorAll('[data-cycle]').forEach(function(el){ ioLocal.observe(el); });
+  })();
+  /* 10 text highlight on scroll */
+  (function(){
+    var box=document.getElementById('sw10'), text=document.getElementById('sw10text');
+    box.addEventListener('scroll', function(){
+      var p=box.scrollTop/(box.scrollHeight-box.clientHeight); p=clamp(p,0,1)*100;
+      text.style.background='linear-gradient(90deg, var(--ink) 0%, var(--ink) '+p+'%, color-mix(in srgb, var(--ink) 30%, transparent) '+p+'%, color-mix(in srgb, var(--ink) 30%, transparent) 100%)';
+      text.style.webkitBackgroundClip='text'; text.style.backgroundClip='text'; text.style.color='transparent';
+    }, {passive:true});
+  })();
+  /* 11 theme transition */
+  (function(){
+    var box=document.getElementById('sw11box'), stage=document.getElementById('sw11');
+    var colors={'1':'var(--paper)','2':'var(--accent-soft)','3':'var(--paper-raised)'};
+    var ioLocal=new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ stage.style.background=colors[e.target.getAttribute('data-chapter')]; } });
+    }, { root:box, threshold:.6 });
+    box.querySelectorAll('[data-chapter]').forEach(function(el){ ioLocal.observe(el); });
+  })();
+  /* 12 svg path draw on scroll */
+  (function(){
+    var box=document.getElementById('sw12'), path=document.getElementById('sw12path');
+    var len=path.getTotalLength(); path.style.strokeDasharray=len; path.style.strokeDashoffset=len;
+    box.addEventListener('scroll', function(){
+      var p=clamp(box.scrollTop/(box.scrollHeight-box.clientHeight),0,1);
+      path.style.strokeDashoffset = len*(1-p);
+    }, {passive:true});
+  })();
+  /* 13 reveals beyond fade */
+  (function(){
+    var stage=document.getElementById('sw13stage'), canvas=document.getElementById('sw13canvas'), ctx=canvas.getContext('2d');
+    function paintBase(){ ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle=getComputedStyle(root).getPropertyValue('--accent-soft'); ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.fillStyle=getComputedStyle(root).getPropertyValue('--ink'); ctx.font='bold 26px sans-serif'; ctx.fillText('REVEAL', 30, 82); }
+    paintBase();
+    document.querySelectorAll('[data-reveal]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var mode=btn.getAttribute('data-reveal'); var start=null; var dur=650;
+        function frame(ts){ if(!start) start=ts; var t=clamp((ts-start)/dur,0,1);
+          ctx.clearRect(0,0,canvas.width,canvas.height); paintBase();
+          ctx.save();
+          if(mode==='curtain'){ ctx.globalCompositeOperation='destination-in'; ctx.fillRect(0,0,canvas.width*t,canvas.height); }
+          else if(mode==='blur'){ canvas.style.filter='blur('+((1-t)*10)+'px)'; }
+          else if(mode==='pixel'){
+            var block=Math.max(1,Math.round(22*(1-t)+1));
+            var w=Math.max(1,Math.floor(canvas.width/block)), h=Math.max(1,Math.floor(canvas.height/block));
+            var tmp=document.createElement('canvas'); tmp.width=w; tmp.height=h;
+            tmp.getContext('2d').drawImage(canvas,0,0,canvas.width,canvas.height,0,0,w,h);
+            ctx.imageSmoothingEnabled=false; ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.drawImage(tmp,0,0,w,h,0,0,canvas.width,canvas.height);
+          }
+          ctx.restore();
+          if(t<1) requestAnimationFrame(frame); else { canvas.style.filter='none'; }
+        }
+        canvas.style.filter='none'; requestAnimationFrame(frame);
+      });
+    });
+  })();
+  /* 14 progress + counter */
+  (function(){
+    var bar=document.getElementById('sw14bar'), countEl=document.getElementById('sw14count'), counted=false;
+    window.addEventListener('scroll', function(){
+      var p=window.scrollY/(document.documentElement.scrollHeight-window.innerHeight); bar.style.width=(clamp(p,0,1)*100)+'%';
+    }, {passive:true});
+    var target=countEl.closest('.swatch');
+    new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting && !counted){ counted=true;
+        var v=0; var iv=setInterval(function(){ v+=7; if(v>=248){ v=248; clearInterval(iv);} countEl.textContent=v; }, 20); } });
+    }, {threshold:.5}).observe(target);
+  })();
+  /* 15 hero-to-content morph (FLIP-lite) */
+  (function(){
+    var thumb=document.getElementById('sw15thumb'), stage=document.getElementById('sw15stage'); var open=false;
+    thumb.addEventListener('click', function(){
+      if(open){ thumb.style.width='60px'; thumb.style.height='60px'; thumb.textContent='click'; open=false; }
+      else { thumb.style.width='90%'; thumb.style.height='90%'; thumb.textContent='expanded — click to close'; open=true; }
+      thumb.style.transition='width .4s cubic-bezier(.16,1,.3,1), height .4s cubic-bezier(.16,1,.3,1)';
+    });
+  })();
+
+  /* ================= B. CURSOR CATALOG ================= */
+  /* 16 cursor trail */
+  (function(){
+    var el=document.getElementById('sw16'), canvas=document.getElementById('sw16canvas'), ctx=canvas.getContext('2d'); var trail=[];
+    el.addEventListener('pointermove', function(e){ var r=canvas.getBoundingClientRect(); trail.push({x:e.clientX-r.left,y:e.clientY-r.top,a:1}); if(trail.length>24) trail.shift(); });
+    tickers.push(function(){ ctx.clearRect(0,0,canvas.width,canvas.height); trail.forEach(function(p){ p.a*=0.92;
+      ctx.fillStyle='rgba(255,59,110,'+p.a+')'; ctx.beginPath(); ctx.arc(p.x,p.y,3,0,7); ctx.fill(); }); trail=trail.filter(function(p){return p.a>0.03;}); });
+  })();
+  /* 17 blend invert cursor */
+  (function(){
+    var el=document.getElementById('sw17'), d=document.getElementById('sw17dot');
+    el.addEventListener('pointermove', function(e){ var r=el.getBoundingClientRect(); d.style.transform='translate('+(e.clientX-r.left-8)+'px,'+(e.clientY-r.top-8)+'px)'; });
+  })();
+  /* 18 sticky cursor */
+  (function(){
+    var el=document.getElementById('sw18'), ringEl=document.getElementById('sw18ring'); var tx=20,ty=20,stuck=null;
+    el.addEventListener('pointermove', function(e){
+      var r=el.getBoundingClientRect(); var mx=e.clientX-r.left, my=e.clientY-r.top;
+      var nearest=null,dist=9999;
+      el.querySelectorAll('[data-stick]').forEach(function(btn){ var br=btn.getBoundingClientRect(); var cx=br.left-r.left+br.width/2, cy=br.top-r.top+br.height/2;
+        var d=Math.hypot(mx-cx,my-cy); if(d<dist){dist=d; nearest={x:cx,y:cy,d:d};} });
+      if(nearest && nearest.d<30){ tx=nearest.x-9; ty=nearest.y-9; } else { tx=mx-9; ty=my-9; }
+    });
+    tickers.push(function(){ var cur=ringEl._x||0, cy=ringEl._y||0; cur+=(tx-cur)*LERP; cy+=(ty-cy)*LERP; ringEl._x=cur; ringEl._y=cy; ringEl.style.transform='translate('+cur+'px,'+cy+'px)'; });
+  })();
+  /* 19 spotlight */
+  (function(){
+    var el=document.getElementById('sw19'), mask=document.getElementById('sw19mask');
+    el.addEventListener('pointermove', function(e){ var r=el.getBoundingClientRect(); mask.style.webkitMask='radial-gradient(circle 40px at '+(e.clientX-r.left)+'px '+(e.clientY-r.top)+'px, #000 60%, transparent 61%)'; mask.style.mask=mask.style.webkitMask; });
+  })();
+  /* 20 gooey cursor */
+  (function(){
+    var el=document.getElementById('sw20'), a=document.getElementById('sw20a'), b=document.getElementById('sw20b'); var ax=0,ay=0,bx=0,by=0,tx=0,ty=0;
+    el.addEventListener('pointermove', function(e){ var r=el.getBoundingClientRect(); tx=e.clientX-r.left; ty=e.clientY-r.top; });
+    tickers.push(function(){ ax+=(tx-10-ax)*0.2; ay+=(ty-10-ay)*0.2; bx+=(tx-7-bx)*0.09; by+=(ty-7-by)*0.09;
+      a.style.transform='translate('+ax+'px,'+ay+'px)'; b.style.transform='translate('+bx+'px,'+by+'px)'; });
+  })();
+  /* 21 media follows cursor */
+  (function(){
+    var el=document.getElementById('sw21'), thumb=document.getElementById('sw21thumb'); var tx=0,ty=0,active=false;
+    el.querySelectorAll('[data-media]').forEach(function(row){
+      row.addEventListener('pointerenter', function(){ thumb.style.opacity='1'; active=true; });
+      row.addEventListener('pointerleave', function(){ thumb.style.opacity='0'; active=false; });
+    });
+    el.addEventListener('pointermove', function(e){ var r=el.getBoundingClientRect(); tx=e.clientX-r.left+14; ty=e.clientY-r.top-25; });
+    tickers.push(function(){ if(!active) return; var cx=thumb._x||tx, cy=thumb._y||ty; cx+=(tx-cx)*LERP; cy+=(ty-cy)*LERP; thumb._x=cx; thumb._y=cy; thumb.style.transform='translate('+cx+'px,'+cy+'px)'; });
+  })();
+  /* 22 repel field */
+  (function(){
+    var canvas=document.getElementById('sw22canvas'), ctx=canvas.getContext('2d'); var pts=[]; var cols=10, rows=6;
+    for(var i=0;i<cols;i++) for(var j=0;j<rows;j++) pts.push({ox:(i+0.5)*(canvas.width/cols), oy:(j+0.5)*(canvas.height/rows), x:0,y:0});
+    var mx=-999,my=-999;
+    canvas.addEventListener('pointermove', function(e){ var r=canvas.getBoundingClientRect(); mx=e.clientX-r.left; my=e.clientY-r.top; });
+    canvas.addEventListener('pointerleave', function(){ mx=-999; my=-999; });
+    tickers.push(function(){ ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle=getComputedStyle(root).getPropertyValue('--accent');
+      pts.forEach(function(p){ var dx=p.ox-mx, dy=p.oy-my, d=Math.hypot(dx,dy); var push=d<40? (40-d)*0.6:0;
+        var tx=p.ox+(d>0?dx/d:0)*push, ty=p.oy+(d>0?dy/d:0)*push;
+        p.x+=(tx-p.ox-p.x)*0.2; p.y+=(ty-p.oy-p.y)*0.2;
+        ctx.beginPath(); ctx.arc(p.ox+p.x, p.oy+p.y, 2, 0, 7); ctx.fill(); }); });
+  })();
+  /* 23 image trail */
+  (function(){
+    var el=document.getElementById('sw23'); var last=0;
+    el.addEventListener('pointermove', function(e){
+      var now=Date.now(); if(now-last<70) return; last=now;
+      var r=el.getBoundingClientRect(); var b=document.createElement('div');
+      b.style.cssText='position:absolute; width:20px; height:20px; left:'+(e.clientX-r.left-10)+'px; top:'+(e.clientY-r.top-10)+'px; background:var(--accent-soft); border:1px solid var(--line-strong); transition:opacity .5s, transform .5s;';
+      el.appendChild(b); requestAnimationFrame(function(){ b.style.opacity='0'; b.style.transform='scale(1.6)'; });
+      setTimeout(function(){ b.remove(); }, 550);
+    });
+  })();
+  /* 24 portfolio list reveal */
+  (function(){
+    var el=document.getElementById('sw24'), thumb=document.getElementById('sw24thumb'); var tx=0,ty=0,active=false;
+    el.querySelectorAll('[data-plist]').forEach(function(row){ row.addEventListener('pointerenter', function(){ active=true; thumb.style.opacity='1'; }); row.addEventListener('pointerleave', function(){ active=false; thumb.style.opacity='0'; }); });
+    el.addEventListener('pointermove', function(e){ var r=el.getBoundingClientRect(); tx=e.clientX-r.left+10; ty=e.clientY-r.top-22; });
+    tickers.push(function(){ if(!active) return; var cx=thumb._x||tx, cy=thumb._y||ty; cx+=(tx-cx)*LERP; cy+=(ty-cy)*LERP; thumb._x=cx; thumb._y=cy; thumb.style.transform='translate('+cx+'px,'+cy+'px)'; });
+  })();
+  /* 25 directional-aware hover */
+  (function(){
+    var el=document.getElementById('sw25'), fill=document.getElementById('sw25fill');
+    el.addEventListener('pointerenter', function(e){ var r=el.getBoundingClientRect(); var edge=edgeOf(e,r); fill.style.transition='none'; fill.style.transform=edge; requestAnimationFrame(function(){ fill.style.transition='transform .35s cubic-bezier(.16,1,.3,1)'; fill.style.transform='translateY(0) translateX(0)'; }); });
+    el.addEventListener('pointerleave', function(e){ var r=el.getBoundingClientRect(); fill.style.transform=edgeOf(e,r); });
+    function edgeOf(e,r){ var x=e.clientX-r.left, y=e.clientY-r.top; var fromTop=y, fromBottom=r.height-y, fromLeft=x, fromRight=r.width-x;
+      var m=Math.min(fromTop,fromBottom,fromLeft,fromRight);
+      if(m===fromTop) return 'translateY(-100%)'; if(m===fromBottom) return 'translateY(100%)'; if(m===fromLeft) return 'translateX(-100%)'; return 'translateX(100%)'; }
+  })();
+  /* 27 spotlight card grid */
+  (function(){
+    var grid=document.getElementById('sw27');
+    grid.querySelectorAll('.spotlight-cell').forEach(function(cell){
+      cell.addEventListener('pointerenter', function(){ grid.classList.add('active'); grid.querySelectorAll('.spotlight-cell').forEach(function(c){c.classList.remove('hot');}); cell.classList.add('hot'); });
+      cell.addEventListener('pointerleave', function(){ grid.classList.remove('active'); cell.classList.remove('hot'); });
+    });
+  })();
+  /* 28 dock magnification */
+  (function(){
+    var row=document.getElementById('sw28'), items=row.querySelectorAll('.dock-item');
+    row.addEventListener('pointermove', function(e){
+      items.forEach(function(it){ var r=it.getBoundingClientRect(); var cx=r.left+r.width/2; var d=Math.abs(e.clientX-cx); var scale=1+Math.max(0,(60-d)/60)*0.8;
+        it.style.transform='scale('+scale+')'; });
+    });
+    row.addEventListener('pointerleave', function(){ items.forEach(function(it){ it.style.transform='scale(1)'; }); });
+  })();
+
+  /* ================= C. KINETIC TYPOGRAPHY CATALOG ================= */
+  /* 29 typewriter */
+  (function(){
+    var el=document.getElementById('sw29'); var FINAL='design, decoded.'; var caret='<span style="opacity:.6;">|</span>';
+    function type(){ var i=0; el.textContent=''; var iv=setInterval(function(){ i++; el.innerHTML=FINAL.slice(0,i)+caret; if(i>=FINAL.length) clearInterval(iv); }, 55); }
+    type(); el.addEventListener('click', type);
+  })();
+  /* 30 text on path rotation */
+  (function(){
+    var svg=document.getElementById('sw30svg'); var angle=0; var hovering=false;
+    svg.addEventListener('pointerenter', function(){ hovering=true; }); svg.addEventListener('pointerleave', function(){ hovering=false; });
+    tickers.push(function(){ if(!hovering) angle+=0.4; svg.style.transform='rotate('+angle+'deg)'; svg.style.transformOrigin='50% 50%'; });
+  })();
+  /* 32 character physics */
+  (function(){
+    var el=document.getElementById('sw32'), canvas=document.getElementById('sw32canvas'), ctx=canvas.getContext('2d');
+    var word='FALL', letters=null;
+    function reset(){ letters=word.split('').map(function(ch,i){ return {ch:ch, x:40+i*36, y:54, vx:(Math.random()-0.5)*1, vy:0, r:0, vr:(Math.random()-0.5)*0.1, falling:false}; }); }
+    reset();
+    el.addEventListener('click', function(){ letters.forEach(function(l){ l.falling=true; l.vy=-2-Math.random()*2; l.vx=(Math.random()-0.5)*4; }); setTimeout(reset, 1400); });
+    tickers.push(function(){ ctx.clearRect(0,0,canvas.width,canvas.height); ctx.font='bold 28px sans-serif'; ctx.fillStyle=getComputedStyle(root).getPropertyValue('--ink');
+      letters.forEach(function(l){ if(l.falling){ l.vy+=0.35; l.x+=l.vx; l.y+=l.vy; l.r+=l.vr; if(l.y>110){ l.y=110; l.vy*=-0.3; } }
+        ctx.save(); ctx.translate(l.x,l.y); ctx.rotate(l.r); ctx.fillText(l.ch,0,0); ctx.restore(); }); });
+  })();
+  /* 33 turbulence idle animation */
+  (function(){ var turb=document.getElementById('sw33turb'); var f=0.01,dir=1;
+    tickers.push(function(){ f+=0.0004*dir; if(f>0.02||f<0.006) dir*=-1; turb.setAttribute('baseFrequency', f.toFixed(4)); });
+  })();
+  /* 34 reveal variations */
+  (function(){
+    var word=document.getElementById('sw34word');
+    document.querySelectorAll('[data-rv]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var mode=btn.getAttribute('data-rv'); word.style.transition='none'; word.style.filter='none'; word.style.clipPath='none'; word.style.transform='none'; word.style.opacity='0';
+        if(mode==='slide') word.style.transform='translateY(16px)';
+        if(mode==='mask') word.style.clipPath='inset(0 100% 0 0)';
+        if(mode==='blur') word.style.filter='blur(8px)';
+        requestAnimationFrame(function(){ word.style.transition='all .5s cubic-bezier(.16,1,.3,1)'; word.style.opacity='1'; word.style.transform='none'; word.style.clipPath='inset(0 0 0 0)'; word.style.filter='none'; });
+      });
+    });
+  })();
+  /* 35 wavy text */
+  (function(){
+    var el=document.getElementById('sw35'); var text=el.textContent; el.innerHTML=text.split('').map(function(ch,i){ return '<span style="display:inline-block;" data-i="'+i+'">'+ch+'</span>'; }).join('');
+    var spans=el.querySelectorAll('span'); var t=0;
+    tickers.push(function(){ t+=0.06; spans.forEach(function(s,i){ s.style.transform='translateY('+(Math.sin(t+i*0.6)*4)+'px)'; }); });
+  })();
+  /* 37 split-flap */
+  (function(){
+    var el=document.getElementById('sw37'); var FINAL='FLAP'; var chars=FINAL.split('').map(function(){ var d=document.createElement('div');
+      d.style.cssText='width:24px; height:32px; background:var(--ink); color:var(--paper); display:flex; align-items:center; justify-content:center; font-family:monospace; font-weight:700; font-size:16px;'; el.appendChild(d); return d; });
+    function roll(){ chars.forEach(function(d,i){ var n=0; var iv=setInterval(function(){ d.textContent=CHARS[Math.floor(Math.random()*CHARS.length)]; n++; if(n>6+i*2){ clearInterval(iv); d.textContent=FINAL[i]; } }, 60); }); }
+    roll(); el.addEventListener('click', roll);
+  })();
+  /* 39 svg line draw on view */
+  (function(){
+    var stage=document.getElementById('sw39stage'), path=document.getElementById('sw39path'); var len=path.getTotalLength();
+    path.style.strokeDasharray=len; path.style.strokeDashoffset=len;
+    new IntersectionObserver(function(entries){ entries.forEach(function(e){ if(e.isIntersecting){ path.style.transition='stroke-dashoffset .8s cubic-bezier(.16,1,.3,1)'; path.style.strokeDashoffset=0; } }); }, {threshold:.4}).observe(stage);
+  })();
+  /* 40 svg path morph */
+  (function(){
+    var path=document.getElementById('sw40path');
+    var shapeA='M40,10 C60,10 70,30 70,45 C70,65 55,70 40,70 C20,70 10,55 10,40 C10,20 22,10 40,10 Z';
+    var shapeB='M40,15 C55,5 72,20 68,40 C75,58 55,72 40,65 C22,75 8,55 15,40 C5,22 25,8 40,15 Z';
+    var t=0,dir=1; tickers.push(function(){ t+=0.012*dir; if(t>=1){t=1;dir=-1;} if(t<=0){t=0;dir=1;} path.setAttribute('d', t<0.5?shapeA:shapeB); });
+    /* morph is a two-state cycle (true point-interpolation needs matched point counts; this keeps it honest and simple) */
+  })();
+  /* 41 animated icon */
+  (function(){
+    var el=document.getElementById('sw41'), heart=document.getElementById('sw41heart'); var liked=false;
+    el.addEventListener('click', function(){ liked=!liked; heart.querySelector('path').setAttribute('fill', liked? getComputedStyle(root).getPropertyValue('--accent'):'none');
+      heart.style.transition='transform .3s cubic-bezier(.34,1.56,.64,1)'; heart.style.transform='scale(1.4)'; setTimeout(function(){ heart.style.transform='scale(1)'; }, 180); });
+  })();
+  /* 42 gooey blob merge (idle orbit) */
+  (function(){
+    var a=document.getElementById('sw42a'), b=document.getElementById('sw42b'); var t=0;
+    tickers.push(function(){ t+=0.02; a.style.transform='translate('+Math.sin(t)*18+'px,'+Math.cos(t*0.8)*10+'px)'; b.style.transform='translate('+Math.cos(t*1.2)*14+'px,'+Math.sin(t*0.9)*8+'px)'; });
+  })();
+  /* 44 shader distortion approximation */
+  (function(){
+    var el=document.getElementById('sw44');
+    el.addEventListener('pointerenter', function(){ el.style.filter='contrast(1.2) saturate(1.4)'; el.style.transform='scale(1.05)'; });
+    el.addEventListener('pointerleave', function(){ el.style.filter='none'; el.style.transform='scale(1)'; });
+  })();
+
+  /* ================= E. GENERATIVE CATALOG ================= */
+  /* 44/45 CPU particles */
+  (function(){
+    var canvas=document.getElementById('sw45canvas'), ctx=canvas.getContext('2d'); var parts=[]; var mx=canvas.width/2,my=canvas.height/2;
+    for(var i=0;i<70;i++) parts.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,vx:(Math.random()-0.5)*.4,vy:(Math.random()-0.5)*.4});
+    canvas.addEventListener('pointermove', function(e){ var r=canvas.getBoundingClientRect(); mx=e.clientX-r.left; my=e.clientY-r.top; });
+    tickers.push(function(){ ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle=getComputedStyle(root).getPropertyValue('--accent');
+      parts.forEach(function(p){ var dx=mx-p.x, dy=my-p.y, d=Math.hypot(dx,dy); if(d<50){ p.vx-=dx/d*0.08; p.vy-=dy/d*0.08; }
+        p.x+=p.vx; p.y+=p.vy; p.vx*=0.98; p.vy*=0.98; if(p.x<0||p.x>canvas.width) p.vx*=-1; if(p.y<0||p.y>canvas.height) p.vy*=-1;
+        ctx.beginPath(); ctx.arc(p.x,p.y,1.6,0,7); ctx.fill(); }); });
+  })();
+  /* 45/46 constellation */
+  (function(){
+    var canvas=document.getElementById('sw46canvas'), ctx=canvas.getContext('2d'); var nodes=[]; var mx=-99,my=-99;
+    for(var i=0;i<24;i++) nodes.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,vx:(Math.random()-0.5)*.3,vy:(Math.random()-0.5)*.3});
+    canvas.addEventListener('pointermove', function(e){ var r=canvas.getBoundingClientRect(); mx=e.clientX-r.left; my=e.clientY-r.top; });
+    tickers.push(function(){ ctx.clearRect(0,0,canvas.width,canvas.height);
+      nodes.forEach(function(p){ var dx=mx-p.x,dy=my-p.y,d=Math.hypot(dx,dy); if(d<35){ p.x-=dx/d*1.2; p.y-=dy/d*1.2; }
+        p.x+=p.vx; p.y+=p.vy; if(p.x<0||p.x>canvas.width)p.vx*=-1; if(p.y<0||p.y>canvas.height)p.vy*=-1; });
+      ctx.strokeStyle='rgba(23,20,15,.25)';
+      for(var i=0;i<nodes.length;i++) for(var j=i+1;j<nodes.length;j++){ var d=Math.hypot(nodes[i].x-nodes[j].x,nodes[i].y-nodes[j].y); if(d<38){ ctx.globalAlpha=1-d/38; ctx.beginPath(); ctx.moveTo(nodes[i].x,nodes[i].y); ctx.lineTo(nodes[j].x,nodes[j].y); ctx.stroke(); } }
+      ctx.globalAlpha=1; ctx.fillStyle=getComputedStyle(root).getPropertyValue('--accent'); nodes.forEach(function(p){ ctx.beginPath(); ctx.arc(p.x,p.y,2,0,7); ctx.fill(); }); });
+  })();
+  /* 46/47 metaballs */
+  (function(){
+    var field=document.getElementById('sw47field'); var blobs=[]; var t=0;
+    for(var i=0;i<3;i++){ var d=document.createElement('div'); d.style.cssText='position:absolute; width:34px; height:34px; border-radius:999px; background:var(--accent);'; field.appendChild(d); blobs.push(d); }
+    tickers.push(function(){ t+=0.02; blobs.forEach(function(b,i){ var a=t+i*2.1; b.style.transform='translate('+(90+Math.cos(a)*55)+'px,'+(50+Math.sin(a*1.3)*22)+'px)'; }); });
+  })();
+  /* 47/48 reactive dot grid */
+  (function(){
+    var canvas=document.getElementById('sw48canvas'), ctx=canvas.getContext('2d'); var mx=-99,my=-99; var cols=14,rows=7;
+    canvas.addEventListener('pointermove', function(e){ var r=canvas.getBoundingClientRect(); mx=e.clientX-r.left; my=e.clientY-r.top; });
+    tickers.push(function(){ ctx.clearRect(0,0,canvas.width,canvas.height);
+      for(var i=0;i<cols;i++) for(var j=0;j<rows;j++){ var x=(i+0.5)*(canvas.width/cols), y=(j+0.5)*(canvas.height/rows);
+        var d=Math.hypot(x-mx,y-my); var s=d<40?(40-d)/40:0; ctx.fillStyle='rgba(255,59,110,'+(0.25+s*0.75)+')'; ctx.beginPath(); ctx.arc(x,y,1.4+s*2.4,0,7); ctx.fill(); } });
+  })();
+  /* 48/49 ascii */
+  (function(){
+    var canvas=document.getElementById('sw49canvas'), ctx=canvas.getContext('2d'); var chars=' .:-=+*#%@'; var mx=canvas.width/2;
+    canvas.addEventListener('pointermove', function(e){ var r=canvas.getBoundingClientRect(); mx=e.clientX-r.left; });
+    ctx.font='7px monospace';
+    tickers.push(function(){ ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle='#8f8'; var cell=8;
+      for(var x=0;x<canvas.width;x+=cell) for(var y=0;y<canvas.height;y+=cell){ var b=(Math.sin((x-mx)*0.05)+1)/2 * (1-y/canvas.height);
+        var idx=Math.floor(b*(chars.length-1)); ctx.fillText(chars[idx], x, y+cell); } });
+  })();
+  /* 49/50 halftone */
+  (function(){
+    var canvas=document.getElementById('sw50canvas'), ctx=canvas.getContext('2d'); var mx=canvas.width*0.4,my=canvas.height*0.4;
+    canvas.addEventListener('pointermove', function(e){ var r=canvas.getBoundingClientRect(); mx=e.clientX-r.left; my=e.clientY-r.top; });
+    tickers.push(function(){ ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle=getComputedStyle(root).getPropertyValue('--ink'); var cell=10;
+      for(var x=0;x<canvas.width;x+=cell) for(var y=0;y<canvas.height;y+=cell){ var d=Math.hypot(x-mx,y-my); var lum=clamp(d/120,0,1);
+        var r2=(1-lum)*4; ctx.beginPath(); ctx.arc(x,y,r2,0,7); ctx.fill(); } });
+  })();
+  /* 50/51 grain/glitch */
+  (function(){
+    var canvas=document.getElementById('sw51canvas'), ctx=canvas.getContext('2d'); var text=document.getElementById('sw51text'), el=document.getElementById('sw51');
+    var img=ctx.createImageData(canvas.width, canvas.height);
+    function noise(){ for(var i=0;i<img.data.length;i+=4){ var v=Math.random()*255; img.data[i]=v; img.data[i+1]=v; img.data[i+2]=v; img.data[i+3]=40; } ctx.putImageData(img,0,0); }
+    var n=0; tickers.push(function(){ n++; if(n%3===0) noise(); });
+    el.addEventListener('click', function(){
+      text.style.textShadow='2px 0 var(--accent), -2px 0 rgba(0,150,255,.7)'; text.style.transform='translateX(2px)';
+      setTimeout(function(){ text.style.textShadow='none'; text.style.transform='none'; }, 160);
+    });
+  })();
+  /* 51/52 pixelation + duotone */
+  (function(){
+    var canvas=document.getElementById('sw52canvas'), ctx=canvas.getContext('2d'); var el=document.getElementById('sw52');
+    var small=document.createElement('canvas'), sctx=small.getContext('2d');
+    function paint(pixel){
+      var w = pixel>1 ? Math.max(4,Math.floor(canvas.width/pixel)) : canvas.width;
+      var h = pixel>1 ? Math.max(4,Math.floor(canvas.height/pixel)) : canvas.height;
+      small.width=w; small.height=h;
+      var grad=sctx.createLinearGradient(0,0,w,h);
+      grad.addColorStop(0, getComputedStyle(root).getPropertyValue('--accent')); grad.addColorStop(1, getComputedStyle(root).getPropertyValue('--ink'));
+      sctx.fillStyle=grad; sctx.fillRect(0,0,w,h);
+      ctx.imageSmoothingEnabled=false; ctx.clearRect(0,0,canvas.width,canvas.height);
+      ctx.drawImage(small,0,0,w,h,0,0,canvas.width,canvas.height);
+    }
+    paint(1);
+    el.addEventListener('pointerenter', function(){ paint(10); });
+    el.addEventListener('pointerleave', function(){ paint(1); });
+  })();
+  /* 52/53 physics playground */
+  (function(){
+    var canvas=document.getElementById('sw53canvas'), ctx=canvas.getContext('2d'); var balls=[]; var drag=null;
+    for(var i=0;i<5;i++) balls.push({x:20+i*35,y:20,vx:(Math.random()-0.5)*2,vy:0,r:8});
+    canvas.addEventListener('pointerdown', function(e){ var r=canvas.getBoundingClientRect(), mx=e.clientX-r.left, my=e.clientY-r.top;
+      balls.forEach(function(b){ if(Math.hypot(b.x-mx,b.y-my)<b.r+4) drag=b; }); });
+    canvas.addEventListener('pointermove', function(e){ if(!drag) return; var r=canvas.getBoundingClientRect(); drag.tx=e.clientX-r.left; drag.ty=e.clientY-r.top; });
+    canvas.addEventListener('pointerup', function(){ if(drag){ drag.vx=(drag.tx-drag.x)*0.6||0; drag.vy=(drag.ty-drag.y)*0.6||0; } drag=null; });
+    tickers.push(function(){ ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle=getComputedStyle(root).getPropertyValue('--accent');
+      balls.forEach(function(b){ if(b===drag){ b.x=b.tx; b.y=b.ty; } else { b.vy+=0.25; b.x+=b.vx; b.y+=b.vy; b.vx*=0.995;
+        if(b.y>canvas.height-b.r){ b.y=canvas.height-b.r; b.vy*=-0.6; } if(b.x<b.r||b.x>canvas.width-b.r){ b.vx*=-1; b.x=clamp(b.x,b.r,canvas.width-b.r); } }
+        ctx.beginPath(); ctx.arc(b.x,b.y,b.r,0,7); ctx.fill(); }); });
+  })();
+  /* 53/54 draggable canvas */
+  (function(){
+    var el=document.getElementById('sw54'), inner=document.getElementById('sw54inner'); var x=-100,y=-100,vx=0,vy=0,dragging=false,lastX=0,lastY=0;
+    inner.style.transform='translate('+x+'px,'+y+'px)';
+    el.addEventListener('pointerdown', function(e){ dragging=true; lastX=e.clientX; lastY=e.clientY; el.style.cursor='grabbing'; });
+    window.addEventListener('pointermove', function(e){ if(!dragging) return; vx=e.clientX-lastX; vy=e.clientY-lastY; x+=vx; y+=vy; lastX=e.clientX; lastY=e.clientY; });
+    window.addEventListener('pointerup', function(){ dragging=false; el.style.cursor='grab'; });
+    tickers.push(function(){ if(!dragging){ x+=vx; y+=vy; vx*=0.9; vy*=0.9; } inner.style.transform='translate('+x+'px,'+y+'px)'; });
+  })();
+  /* 54/55 inertia carousel */
+  (function(){
+    var el=document.getElementById('sw55'), track=document.getElementById('sw55track'); var x=0,vx=0,dragging=false,lastX=0;
+    el.addEventListener('pointerdown', function(e){ dragging=true; lastX=e.clientX; el.style.cursor='grabbing'; });
+    window.addEventListener('pointermove', function(e){ if(!dragging) return; vx=e.clientX-lastX; x+=vx; lastX=e.clientX; });
+    window.addEventListener('pointerup', function(){ dragging=false; el.style.cursor='grab'; });
+    tickers.push(function(){ if(!dragging){ x+=vx; vx*=0.92; x=clamp(x,-140,0); } track.style.transform='translateX('+x+'px)'; });
+  })();
+  /* 55/56 depth-map parallax */
+  (function(){
+    var el=document.getElementById('sw56'), back=document.getElementById('sw56back'), mid=document.getElementById('sw56mid');
+    el.addEventListener('pointermove', function(e){ var r=el.getBoundingClientRect(); var px=(e.clientX-r.left)/r.width-0.5, py=(e.clientY-r.top)/r.height-0.5;
+      back.style.transform='translate('+(px*8)+'px,'+(py*8)+'px)'; mid.style.transform='translate('+(px*20)+'px,'+(py*20)+'px)'; });
+  })();
+
+  /* ================= F. CORE MECHANISMS CATALOG ================= */
+  /* 56/57 parallax */
+  (function(){
+    var stage=document.getElementById('sw57'), back=document.getElementById('sw57back');
+    function update(){
+      var r=stage.getBoundingClientRect();
+      var distFromCenter = (window.innerHeight/2) - (r.top + r.height/2); /* element-relative, not absolute page scroll */
+      back.style.transform='translateY('+(distFromCenter*0.15)+'px)';
+    }
+    window.addEventListener('scroll', update, {passive:true});
+    update();
+  })();
+  /* 57/58 native scroll-driven with JS fallback */
+  (function(){
+    var bar=document.getElementById('sw58bar'); var supported = CSS && CSS.supports && CSS.supports('animation-timeline: scroll()');
+    window.addEventListener('scroll', function(){ var p=window.scrollY/(document.documentElement.scrollHeight-window.innerHeight); bar.style.height=(clamp(p,0,1)*100)+'%'; }, {passive:true});
+  })();
+  /* 58/59 spring physics drag */
+  (function(){
+    var el=document.getElementById('sw59'), ball=document.getElementById('sw59ball'); var x=90,y=40,vx=0,vy=0,tx=90,ty=40,dragging=false;
+    ball.style.transform='translate('+x+'px,'+y+'px)';
+    ball.addEventListener('pointerdown', function(){ dragging=true; });
+    el.addEventListener('pointermove', function(e){ if(!dragging) return; var r=el.getBoundingClientRect(); tx=e.clientX-r.left-13; ty=e.clientY-r.top-13; x=tx; y=ty; });
+    window.addEventListener('pointerup', function(){ if(!dragging) return; dragging=false; tx=90; ty=40; vx=0; vy=0; });
+    tickers.push(function(){ if(dragging){ ball.style.transform='translate('+x+'px,'+y+'px)'; return; }
+      var stiffness=0.12, damping=0.78; var ax=(tx-x)*stiffness, ay=(ty-y)*stiffness; vx=(vx+ax)*damping; vy=(vy+ay)*damping; x+=vx; y+=vy;
+      ball.style.transform='translate('+x+'px,'+y+'px)'; });
+  })();
+  /* 59/60 FLIP shuffle */
+  (function(){
+    var container=document.getElementById('sw60');
+    document.getElementById('sw60shuffle').addEventListener('click', function(){
+      var items=Array.prototype.slice.call(container.querySelectorAll('[data-flip-id]'));
+      var first={}; items.forEach(function(it){ first[it.dataset.flipId]=it.getBoundingClientRect(); });
+      var shuffled=items.slice().sort(function(){ return Math.random()-0.5; });
+      shuffled.forEach(function(it){ container.insertBefore(it, document.getElementById('sw60shuffle')); });
+      items.forEach(function(it){
+        var last=it.getBoundingClientRect(); var f=first[it.dataset.flipId]; var dx=f.left-last.left, dy=f.top-last.top;
+        it.style.transition='none'; it.style.transform='translate('+dx+'px,'+dy+'px)';
+        requestAnimationFrame(function(){ it.style.transition='transform .4s cubic-bezier(.16,1,.3,1)'; it.style.transform='none'; });
+      });
+    });
+  })();
+  /* 60/61 gesture swipe card */
+  (function(){
+    var card=document.getElementById('sw61card'); var startX=0,dx=0,dragging=false,lastX=0,lastT=0,vel=0;
+    card.addEventListener('pointerdown', function(e){ dragging=true; startX=e.clientX; lastX=e.clientX; lastT=Date.now(); card.style.transition='none'; });
+    window.addEventListener('pointermove', function(e){ if(!dragging) return; dx=e.clientX-startX; var now=Date.now(); vel=(e.clientX-lastX)/Math.max(1,now-lastT); lastX=e.clientX; lastT=now;
+      card.style.transform='translateX('+dx+'px) rotate('+(dx*0.04)+'deg)'; card.style.opacity=1-Math.min(Math.abs(dx)/220,0.6); });
+    window.addEventListener('pointerup', function(){ if(!dragging) return; dragging=false; card.style.transition='transform .35s cubic-bezier(.16,1,.3,1), opacity .35s';
+      if(Math.abs(dx)>90 || Math.abs(vel)>0.5){ var dir=dx<0?-1:1; card.style.transform='translateX('+(dir*400)+'px) rotate('+(dir*20)+'deg)'; card.style.opacity='0';
+        setTimeout(function(){ card.style.transition='none'; card.style.transform='none'; card.style.opacity='1'; dx=0; }, 500); }
+      else { card.style.transform='none'; card.style.opacity='1'; dx=0; } });
+  })();
+
+  /* ================= BATCH 2: additional catalog swatches ================= */
+
+  /* 67 elastic / rubber-band scroll */
+  (function(){
+    var box=document.getElementById('sw67'), inner=document.getElementById('sw67inner');
+    box.addEventListener('wheel', function(e){
+      var atTop = box.scrollTop<=0, atBottom = box.scrollTop+box.clientHeight>=box.scrollHeight-1;
+      if((atTop && e.deltaY<0) || (atBottom && e.deltaY>0)){
+        var pull = clamp(-e.deltaY*0.4, -30, 30);
+        inner.style.transition='none'; inner.style.transform='translateY('+pull+'px)';
+        clearTimeout(inner._t); inner._t=setTimeout(function(){ inner.style.transition='transform .4s cubic-bezier(.34,1.56,.64,1)'; inner.style.transform='translateY(0)'; }, 60);
+      }
+    }, {passive:true});
+  })();
+
+  /* 69 seamless infinite loop */
+  (function(){
+    var canvas=document.getElementById('sw69canvas'), ctx=canvas.getContext('2d'); var a=0;
+    tickers.push(function(){ a+=0.05; ctx.clearRect(0,0,100,100); ctx.strokeStyle=getComputedStyle(root).getPropertyValue('--line-strong'); ctx.lineWidth=6;
+      ctx.beginPath(); ctx.arc(50,50,34,0,7); ctx.stroke();
+      ctx.strokeStyle=getComputedStyle(root).getPropertyValue('--accent'); ctx.beginPath(); ctx.arc(50,50,34,a,a+1.4); ctx.stroke(); });
+  })();
+
+  /* 70 slider / gl-transition approximation */
+  (function(){
+    var el=document.getElementById('sw70'), wipe=document.getElementById('sw70wipe'); var on=false;
+    el.addEventListener('click', function(){ on=!on; wipe.style.transition='clip-path .5s cubic-bezier(.16,1,.3,1)';
+      wipe.style.clipPath = on ? 'polygon(0 0,100% 0,100% 100%,0 100%)' : 'polygon(0 0,0 0,0 100%,0 100%)'; });
+  })();
+
+  /* 71 liquid gradient blob */
+  (function(){
+    var el=document.getElementById('sw71'); var t=0;
+    tickers.push(function(){ t+=0.012;
+      el.style.background = 'radial-gradient(circle at '+(50+Math.sin(t)*22)+'% '+(50+Math.cos(t*1.3)*22)+'%, var(--accent-soft), transparent 55%), '+
+                             'radial-gradient(circle at '+(50+Math.cos(t*0.8)*26)+'% '+(50+Math.sin(t*1.6)*18)+'%, var(--accent-soft), transparent 50%)';
+      el.style.filter='blur(6px)'; });
+  })();
+
+  /* 72 depth inside a card */
+  (function(){
+    var el=document.getElementById('sw72'), back=document.getElementById('sw72back'), front=document.getElementById('sw72front');
+    el.addEventListener('pointermove', function(e){ var r=el.getBoundingClientRect(); var px=(e.clientX-r.left)/r.width-0.5, py=(e.clientY-r.top)/r.height-0.5;
+      back.style.transform='translate('+(px*24)+'px,'+(py*24)+'px)'; front.style.transform='translate('+(px*8)+'px,'+(py*8)+'px)'; });
+    el.addEventListener('pointerleave', function(){ back.style.transition='transform .4s'; front.style.transition='transform .4s'; back.style.transform='none'; front.style.transform='none'; });
+    el.addEventListener('pointerenter', function(){ back.style.transition='none'; front.style.transition='none'; });
+  })();
+
+  /* 74 scroll-scrub dial (GSAP ScrollTrigger stand-in) */
+  (function(){
+    var dial=document.getElementById('sw74dial');
+    window.addEventListener('scroll', function(){ var p=window.scrollY/(document.documentElement.scrollHeight-window.innerHeight); dial.style.transform='rotate('+(p*720)+'deg)'; }, {passive:true});
+  })();
+
+  /* 75 canvas image-sequence scroll */
+  (function(){
+    var box=document.getElementById('sw75'), canvas=document.getElementById('sw75canvas'), ctx=canvas.getContext('2d');
+    function drawFrame(p){ ctx.clearRect(0,0,200,108); var cx=100, cy=54, r=30;
+      ctx.strokeStyle=getComputedStyle(root).getPropertyValue('--line-strong'); ctx.lineWidth=2; ctx.beginPath(); ctx.arc(cx,cy,r,0,7); ctx.stroke();
+      var ang=p*Math.PI*4; ctx.strokeStyle=getComputedStyle(root).getPropertyValue('--accent'); ctx.lineWidth=4;
+      ctx.beginPath(); ctx.arc(cx,cy,r, ang, ang+1.1); ctx.stroke();
+      ctx.fillStyle=getComputedStyle(root).getPropertyValue('--ink'); ctx.font='10px monospace'; ctx.fillText('frame '+Math.round(p*24), 10, 100); }
+    drawFrame(0);
+    box.addEventListener('scroll', function(){ var p=clamp(box.scrollTop/(box.scrollHeight-box.clientHeight),0,1); drawFrame(p); }, {passive:true});
+  })();
+
+  /* 76 lerp-based smooth scroll */
+  (function(){
+    var el=document.getElementById('sw76'), track=document.getElementById('sw76track'); var target=0, cur=0, max=180;
+    el.addEventListener('wheel', function(e){ e.preventDefault(); target=clamp(target+e.deltaY*0.5,0,max); }, {passive:false});
+    tickers.push(function(){ cur+=(target-cur)*LERP; track.style.transform='translateY(-'+cur+'px)'; });
+  })();
+
+  /* 77 digit / odometer roll */
+  (function(){
+    var el=document.getElementById('sw77'); var value=204;
+    function render(v){ el.innerHTML=''; String(v).split('').forEach(function(d){ var wrap=document.createElement('div');
+      wrap.style.cssText='width:20px; height:30px; overflow:hidden; position:relative; font-family:monospace; font-weight:700; font-size:20px;';
+      var inner=document.createElement('div'); inner.style.cssText='position:absolute; transition:transform .5s cubic-bezier(.16,1,.3,1);'; inner.textContent=d;
+      wrap.appendChild(inner); el.appendChild(wrap); });
+      el.style.display='flex'; }
+    render(value);
+    el.addEventListener('click', function(){ value = Math.floor(Math.random()*900); render(value); });
+  })();
+
+  /* 61s pinned scene beats */
+  (function(){
+    var box=document.getElementById('sw61s'), label=document.getElementById('sw61sBeat'), dots=document.getElementById('sw61sDots').children;
+    var beats=['Beat I','Beat II','Beat III'];
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ var b=e.target.getAttribute('data-beat'); label.textContent=b;
+        var idx=beats.indexOf(b); Array.prototype.forEach.call(dots, function(d,i){ d.style.background = i===idx ? 'var(--accent)' : 'var(--line-strong)'; }); } });
+    }, { root:box, threshold:.6 });
+    box.querySelectorAll('[data-beat]').forEach(function(el){ io.observe(el); });
+  })();
+
+  /* 62 scene crossfade */
+  (function(){
+    var box=document.getElementById('sw62box'), a=document.getElementById('sw62a');
+    box.addEventListener('scroll', function(){ var p=clamp(box.scrollTop/(box.scrollHeight-box.clientHeight),0,1); a.style.opacity=1-p; a.textContent = p>0.5 ? 'Scene B' : 'Scene A'; }, {passive:true});
+  })();
+
+  /* 63 preloader curtain replay */
+  (function(){
+    var btn=document.getElementById('sw63btn'), curtain=document.getElementById('sw63curtain');
+    btn.addEventListener('click', function(){
+      curtain.style.transition='none'; curtain.style.transform='translateY(0)';
+      requestAnimationFrame(function(){ setTimeout(function(){ curtain.style.transition='transform .7s cubic-bezier(.76,0,.24,1)'; curtain.style.transform='translateY(-100%)'; }, 500); });
+    });
+  })();
+
+  /* 64 font-gated hero entrance */
+  (function(){
+    var btn=document.getElementById('sw64btn'), text=document.getElementById('sw64text');
+    function reveal(){ text.style.transition='opacity .5s, transform .5s'; text.style.opacity='1'; }
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(reveal); else reveal();
+    btn.addEventListener('click', function(){ text.style.transition='none'; text.style.opacity='0'; setTimeout(reveal, 900); });
+  })();
+
+  /* 65 page/route transition */
+  (function(){
+    var btn=document.getElementById('sw65btn'), content=document.getElementById('sw65content'), lbl=document.getElementById('sw65label'); var toggled=false;
+    function swap(){ toggled=!toggled; content.textContent = toggled ? 'Page B' : 'Page A'; }
+    btn.addEventListener('click', function(){
+      if (document.startViewTransition){ lbl.textContent='native View Transitions API'; document.startViewTransition(function(){ swap(); }); }
+      else { lbl.textContent='fallback: manual crossfade'; content.style.transition='opacity .2s'; content.style.opacity='0'; setTimeout(function(){ swap(); content.style.opacity='1'; }, 200); }
+    });
+  })();
+
+  /* 66 session-aware intro */
+  (function(){
+    var flag=document.getElementById('sw66flag'), btn=document.getElementById('sw66btn'); var KEY='fluke-specimen-intro-seen';
+    function render(){ flag.textContent = sessionStorage.getItem(KEY) ? 'seen this session: yes' : 'seen this session: no — plays once'; }
+    if(!sessionStorage.getItem(KEY)) sessionStorage.setItem(KEY,'1');
+    render();
+    btn.addEventListener('click', function(){ sessionStorage.removeItem(KEY); render(); });
+  })();
+
+  /* ================= shared rAF — one clock for every ticker ================= */
+  function loop(){ tickers.forEach(function(fn){ fn(); }); requestAnimationFrame(loop); }
+  requestAnimationFrame(loop);
+})();
+</script>

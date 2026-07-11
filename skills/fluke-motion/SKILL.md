@@ -147,6 +147,10 @@ Evaluate against these lenses — flag only what's actually off, no padding:
 
 Structure each finding as: what's happening now → why it reads as off (name the principle) → concrete fix with values (duration/easing/property). End with the corrected spec (Mode 1 format) when the fixes are substantial.
 
+## Showcase
+
+[showcase/motion-specimen.html](showcase/motion-specimen.html) is a self-contained, open-in-any-browser demo covering the catalog end to end — 78 techniques built live in vanilla CSS/Canvas2D/JS, plus the remaining basic-tier and platform-specific entries cross-referenced for completeness. Reference for humans browsing the repo; not something a session needs to read to use this skill.
+
 ## General notes
 
 - Modes compose: a critique often ends with a corrected spec or a fix applied in code; an implementation sometimes deserves a spec written alongside it. Follow the conversation, not rigid boundaries.
