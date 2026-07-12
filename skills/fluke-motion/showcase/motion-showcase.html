@@ -220,8 +220,9 @@
   /* ---- parallax ---- */
   .plx{ position:relative; height:340px; border-radius:16px; overflow:hidden; border:1px solid var(--line-strong); }
   .plx .layer{ position:absolute; will-change:transform; }
-  .plx .l-bg{ inset:-50px; background:radial-gradient(circle at 30% 30%,#4B3FE4,#14121F); }
-  .plx .l-mid{ inset:-30px; background:radial-gradient(circle at 70% 70%,rgba(199,240,74,.55),transparent 55%); }
+  .plx .l-bg{ inset:-100px; background:radial-gradient(circle at 30% 30%,#4B3FE4,#14121F); }
+  .plx .l-mid{ inset:-90px; background:radial-gradient(circle at 70% 70%,rgba(199,240,74,.6),transparent 52%); }
+  .plx .l-mid2{ inset:-70px; background:radial-gradient(circle at 20% 80%,rgba(58,183,191,.5),transparent 50%); }
   .plx .l-fg{ inset:0; display:grid; place-items:center; }
   .plx .l-fg h3{ color:#fff; font-size:clamp(30px,6vw,64px); font-weight:800; letter-spacing:-.03em; mix-blend-mode:difference; }
 
@@ -238,6 +239,52 @@
   .svgrow{ display:flex; gap:30px; flex-wrap:wrap; align-items:center; }
   .svgcell{ display:flex; flex-direction:column; gap:8px; align-items:center; cursor:none; }
   .svgcell .cap{ font-family:var(--mono); font-size:9.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); }
+
+  /* ---- cursor gallery ---- */
+  .dock{ display:flex; align-items:flex-end; gap:10px; height:60px; }
+  .dock .di{ width:30px; height:30px; border-radius:9px; background:rgba(75,63,228,.18); border:1px solid var(--line-strong); transition:transform .12s cubic-bezier(.16,1,.3,1); flex:0 0 auto; }
+  .spotgrid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:16px; }
+  .spotcell{ height:74px; border-radius:10px; border:1px solid var(--line-strong); background:var(--card); display:grid; place-items:center; font-family:var(--mono); font-size:11px; color:var(--muted); transition:opacity .25s,border-color .25s; }
+  .spotgrid.dim .spotcell{ opacity:.35; } .spotgrid.dim .spotcell.hot{ opacity:1; border-color:var(--indigo); }
+  .dirbox{ position:relative; height:80px; margin-top:16px; border:1px solid var(--line-strong); border-radius:10px; overflow:hidden; display:grid; place-items:center; font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; cursor:none; }
+  .dirbox .fill{ position:absolute; inset:0; background:rgba(75,63,228,.2); }
+
+  /* ---- kinetic II ---- */
+  .k2{ display:flex; flex-direction:column; gap:5px; }
+  .k2 .lbl{ font-family:var(--mono); font-size:9.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); }
+  .typew{ font-family:var(--mono); font-size:clamp(18px,2.4vw,26px); font-weight:700; cursor:none; min-height:1.4em; }
+  .flap{ display:flex; gap:3px; cursor:none; }
+  .flap div{ width:26px; height:34px; background:var(--ink); color:#fff; display:grid; place-items:center; font-family:monospace; font-weight:700; font-size:18px; border-radius:4px; }
+  .ofill{ font-weight:800; font-size:clamp(22px,3.2vw,38px); -webkit-text-stroke:1.5px var(--ink); color:transparent; position:relative; width:max-content; cursor:none; }
+  .ofill::after{ content:attr(data-text); position:absolute; inset:0; color:var(--ink); -webkit-text-stroke:0; width:0; overflow:hidden; white-space:nowrap; transition:width .55s cubic-bezier(.16,1,.3,1); }
+  .ofill:hover::after{ width:100%; }
+  .odo{ display:flex; gap:2px; cursor:none; font-family:monospace; font-weight:700; font-size:26px; }
+  .odo .dg{ width:18px; height:32px; overflow:hidden; position:relative; }
+  .odo .dg i{ position:absolute; left:0; top:0; transition:transform .5s cubic-bezier(.16,1,.3,1); font-style:normal; }
+
+  /* ---- generative II tiles ---- */
+  .genpanel{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+  @media(max-width:680px){ .genpanel{ grid-template-columns:1fr; } }
+  .gentile{ border-radius:12px; overflow:hidden; border:1px solid var(--line-strong); background:#14121F; position:relative; height:150px; cursor:none; }
+  .gentile canvas{ display:block; width:100%; height:150px; }
+  .gentile .gl{ position:absolute; left:10px; bottom:8px; font-family:var(--mono); font-size:9px; color:#fff; opacity:.75; text-transform:uppercase; letter-spacing:.06em; pointer-events:none; }
+
+  /* ---- physics & gesture ---- */
+  .phys{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  @media(max-width:680px){ .phys{ grid-template-columns:1fr; } }
+  .physbox{ border:1px solid var(--line-strong); border-radius:12px; overflow:hidden; background:var(--card); position:relative; height:200px; }
+  .swipe{ position:absolute; inset:0; display:grid; place-items:center; }
+  .swipecard{ width:66%; height:70%; background:var(--ink); color:#fff; border-radius:14px; display:grid; place-items:center; font-family:var(--mono); font-size:12px; text-transform:uppercase; letter-spacing:.06em; cursor:none; }
+  .flipgrid{ position:absolute; inset:14px 14px 46px; display:flex; flex-wrap:wrap; gap:8px; align-content:flex-start; }
+  .flipgrid .fi{ width:42px; height:42px; border-radius:8px; background:rgba(75,63,228,.18); border:1px solid var(--line-strong); display:grid; place-items:center; font-weight:700; cursor:none; }
+
+  /* ---- scrollytelling ---- */
+  .scrolly{ position:relative; }
+  .scrolly .sstage{ position:sticky; top:0; height:100vh; display:grid; place-items:center; overflow:hidden; border-radius:16px; }
+  .scrolly .sstage .beat{ position:absolute; font-size:clamp(28px,5vw,58px); font-weight:800; letter-spacing:-.03em; color:#fff; opacity:0; transition:opacity .5s,transform .6s cubic-bezier(.16,1,.3,1); transform:translateY(20px); }
+  .scrolly .sstage .beat.on{ opacity:1; transform:none; }
+  .scrolly .sstage .sbg{ position:absolute; inset:0; z-index:-1; transition:background .7s; }
+  .scrolly .step{ height:90vh; }
 
   @media (prefers-reduced-motion: reduce){
     .hero-title .line span{ transform:none; } .hero-sub{ opacity:1; }
@@ -545,6 +592,7 @@
   <div class="demo">
     <div class="plx" id="plx">
       <div class="layer l-bg" id="plxBg"></div>
+      <div class="layer l-mid2" id="plxMid2"></div>
       <div class="layer l-mid" id="plxMid"></div>
       <div class="layer l-fg" id="plxFg"><h3>DEPTH</h3></div>
     </div>
@@ -604,10 +652,114 @@
   </div>
 </section>
 
-<!-- 20 FAQ + END -->
-<section data-label="20 · Accordion + count-up">
+<!-- 21 CURSOR GALLERY -->
+<section data-label="21 · Cursor gallery">
   <div class="explain">
-    <div class="tag"><b>20</b> FAQ + stats</div>
+    <div class="tag"><b>21</b> Hover craft II</div>
+    <h2>A grid that responds.</h2>
+    <p class="desc">Portfolio-grade pointer craft — a dock that magnifies, a grid that spotlights, a tile that fills from the edge you enter.</p>
+    <div class="spec">
+      <div><span>Dock</span>icons scale with distance from the pointer (macOS-style)</div>
+      <div><span>Spotlight</span>hovered card glows; siblings dim, not hide</div>
+      <div><span>Directional</span>fill enters from whichever edge the pointer crossed</div>
+    </div>
+  </div>
+  <div class="demo">
+    <div class="dock" id="dock"></div>
+    <div class="spotgrid" id="spotgrid"><div class="spotcell">A</div><div class="spotcell">B</div><div class="spotcell">C</div><div class="spotcell">D</div></div>
+    <div class="dirbox" id="dirbox"><div class="fill" id="dirfill"></div><span style="position:relative">enter from any edge</span></div>
+  </div>
+</section>
+
+<!-- 22 KINETIC II -->
+<section data-label="22 · Kinetic type II">
+  <div class="explain">
+    <div class="tag"><b>22</b> Type treatments</div>
+    <h2>More ways for letters to move.</h2>
+    <p class="desc">Beyond scramble &amp; wave — a typewriter, an airport split-flap, an outline that fills, an odometer that rolls.</p>
+    <div class="spec">
+      <div><span>Type</span>typewriter with a blinking caret (click to retype)</div>
+      <div><span>Flap</span>split-flap board re-rolls to the word</div>
+      <div><span>Fill</span>outline fills on hover; digits reel to a new value</div>
+    </div>
+  </div>
+  <div class="demo">
+    <div style="display:flex;flex-direction:column;gap:20px;">
+      <div class="k2"><span class="lbl">typewriter</span><div class="typew" id="typew"></div></div>
+      <div class="k2"><span class="lbl">split-flap (click)</span><div class="flap" id="flap"></div></div>
+      <div style="display:flex;gap:36px;align-items:flex-end;flex-wrap:wrap;">
+        <div class="k2"><span class="lbl">outline → fill (hover)</span><span class="ofill" data-text="FILL">FILL</span></div>
+        <div class="k2"><span class="lbl">odometer (click)</span><div class="odo" id="odo"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 23 GENERATIVE II -->
+<section data-label="23 · Generative II">
+  <div class="explain">
+    <div class="tag"><b>23</b> Effect tiles</div>
+    <h2>Texture, generated.</h2>
+    <p class="desc">Canvas effects for backgrounds &amp; hero atmospheres — a reactive dot grid, gooey metaballs, an RGB glitch on click.</p>
+    <div class="spec">
+      <div><span>Dots</span>a grid brightens + scales near the pointer</div>
+      <div><span>Metaballs</span>blobs orbit and merge via a gooey filter</div>
+      <div><span>Glitch</span>click a tile for an RGB-split pulse</div>
+    </div>
+  </div>
+  <div class="demo">
+    <div class="genpanel">
+      <div class="gentile"><canvas id="gdots" width="220" height="150"></canvas><span class="gl">dot grid</span></div>
+      <div class="gentile" id="gmetaWrap"><svg style="position:absolute;width:0;height:0"><filter id="goo2"><feGaussianBlur in="SourceGraphic" stdDeviation="7" result="b"/><feColorMatrix in="b" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 24 -10"/></filter></svg><div id="gmeta" style="position:absolute;inset:0;filter:url(#goo2)"></div><span class="gl">metaballs</span></div>
+      <div class="gentile" id="gglitchWrap"><canvas id="gglitch" width="220" height="150" style="position:absolute;inset:0;opacity:.5;mix-blend-mode:overlay"></canvas><span id="gglitchTxt" style="position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-weight:800;font-size:22px">GLITCH</span><span class="gl">click me</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 24 PHYSICS + GESTURE -->
+<section data-label="24 · Physics + gesture">
+  <div class="explain">
+    <div class="tag"><b>24</b> Playful</div>
+    <h2>Unscripted motion.</h2>
+    <p class="desc">Physics gives every visit a different result — the strongest "aliveness" signal. Throw the balls, fling the card, shuffle the grid.</p>
+    <div class="spec">
+      <div><span>Physics</span>balls fall + bounce; drag to throw</div>
+      <div><span>Swipe</span>fling the card past a threshold to dismiss, else it springs back</div>
+      <div><span>FLIP</span>shuffle animates every tile from its old slot to the new</div>
+    </div>
+  </div>
+  <div class="demo">
+    <div class="phys">
+      <div class="physbox"><canvas id="physCanvas" width="400" height="200"></canvas></div>
+      <div class="physbox"><div class="swipe"><div class="swipecard" id="swipecard">← fling me →</div></div></div>
+    </div>
+    <div class="physbox" style="height:150px;margin-top:14px;"><div class="flipgrid" id="flipgrid"></div><button class="kt-btn" id="flipBtn" style="position:absolute;right:10px;bottom:10px;">↻ Shuffle</button></div>
+  </div>
+</section>
+
+<!-- 25 SCROLLYTELLING -->
+<section data-label="25 · Scrollytelling" style="grid-template-columns:1fr;padding-left:0;padding-right:0;">
+  <div class="explain" style="position:static;padding:0 clamp(20px,6vw,90px);">
+    <div class="tag"><b>25</b> Pinned story</div>
+    <h2>Scroll becomes the edit.</h2>
+    <p class="desc">The stage pins; scrolling advances the beats and re-themes the ground — dwell-time per beat controlled like film editing. Scroll on ↓</p>
+    <div class="spec">
+      <div><span>Pin</span>the stage sticks; each scroll "step" commits one beat</div>
+      <div><span>Theme</span>the ground crossfades per beat (discrete, snap-committed)</div>
+    </div>
+  </div>
+  <div class="scrolly" id="scrolly">
+    <div class="sstage"><div class="sbg" id="sbg" style="background:#4B3FE4"></div>
+      <div class="beat on" data-b="0">Problem</div><div class="beat" data-b="1">Insight</div><div class="beat" data-b="2">System</div><div class="beat" data-b="3">Result</div>
+    </div>
+    <div class="step" data-b="0"></div><div class="step" data-b="1"></div><div class="step" data-b="2"></div><div class="step" data-b="3"></div>
+  </div>
+</section>
+
+<!-- 26 FAQ + END -->
+<section data-label="26 · Accordion + count-up">
+  <div class="explain">
+    <div class="tag"><b>26</b> FAQ + stats</div>
     <h2>Quiet motion, still craft.</h2>
     <p class="desc">Product-UI restraint: an accordion that highlights on hover and eases open, and a stat band that counts up once when it enters view.</p>
     <div class="spec">
@@ -837,16 +989,17 @@
   /* 16 parallax + depth */
   (function(){
     var box=document.getElementById('plx'); if(!box) return;
-    var bg=document.getElementById('plxBg'),mid=document.getElementById('plxMid'),fg=document.getElementById('plxFg');
+    var bg=document.getElementById('plxBg'),mid2=document.getElementById('plxMid2'),mid=document.getElementById('plxMid'),fg=document.getElementById('plxFg');
     var mpx=0,mpy=0,cx=0,cy=0;
     box.addEventListener('pointermove',function(e){ var r=box.getBoundingClientRect(); mpx=(e.clientX-r.left)/r.width-0.5; mpy=(e.clientY-r.top)/r.height-0.5; });
     box.addEventListener('pointerleave',function(){ mpx=0; mpy=0; });
     tickers.push(function(){ var rm=reduced||body.classList.contains('rm');
       cx+=((rm?0:mpx)-cx)*0.08; cy+=((rm?0:mpy)-cy)*0.08;
       var r=box.getBoundingClientRect(); var sc=rm?0:clamp(((innerHeight/2)-(r.top+r.height/2))/innerHeight,-1,1);
-      bg.style.transform='translate('+(cx*14)+'px,'+((cy*14)+(sc*30))+'px)';
-      mid.style.transform='translate('+(cx*30)+'px,'+((cy*30)+(sc*60))+'px)';
-      fg.style.transform='translate('+(cx*8)+'px,'+((cy*8)+(sc*-20))+'px)';
+      bg.style.transform='translate('+(cx*34)+'px,'+((cy*26)+(sc*80))+'px)';
+      mid2.style.transform='translate('+(cx*52)+'px,'+((cy*44)+(sc*115))+'px)';
+      mid.style.transform='translate('+(cx*70)+'px,'+((cy*58)+(sc*150))+'px)';
+      fg.style.transform='translate('+(cx*16)+'px,'+((cy*13)+(sc*-52))+'px)';
     });
   })();
 
@@ -887,6 +1040,72 @@
       l1.style.transformOrigin='center'; l2.style.transformOrigin='center';
       menu.addEventListener('click',function(){ open=!open; l1.style.transition='transform .4s cubic-bezier(.34,1.56,.64,1)'; l2.style.transition=l1.style.transition;
         l1.style.transform=open?'translateY(4px) rotate(45deg)':'none'; l2.style.transform=open?'translateY(-4px) rotate(-45deg)':'none'; }); }
+  })();
+
+  /* 21 cursor gallery: dock + spotlight grid + directional */
+  (function(){
+    var dock=document.getElementById('dock'); if(dock){ var h=''; for(var i=0;i<7;i++) h+='<div class="di"></div>'; dock.innerHTML=h; var items=dock.querySelectorAll('.di');
+      dock.addEventListener('pointermove',function(e){ items.forEach(function(it){ var r=it.getBoundingClientRect(); var d=Math.abs(e.clientX-(r.left+r.width/2)); it.style.transform='scale('+(1+Math.max(0,(60-d)/60)*0.9)+')'; }); });
+      dock.addEventListener('pointerleave',function(){ items.forEach(function(it){ it.style.transform='scale(1)'; }); }); }
+    var grid=document.getElementById('spotgrid'); if(grid){ grid.querySelectorAll('.spotcell').forEach(function(c){ c.addEventListener('pointerenter',function(){ grid.classList.add('dim'); grid.querySelectorAll('.spotcell').forEach(function(x){x.classList.remove('hot');}); c.classList.add('hot'); }); c.addEventListener('pointerleave',function(){ grid.classList.remove('dim'); c.classList.remove('hot'); }); }); }
+    var db=document.getElementById('dirbox'), df=document.getElementById('dirfill'); if(db){ function edge(e){ var r=db.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top,m=Math.min(y,r.height-y,x,r.width-x); if(m===y)return'translateY(-100%)'; if(m===r.height-y)return'translateY(100%)'; if(m===x)return'translateX(-100%)'; return'translateX(100%)'; }
+      db.addEventListener('pointerenter',function(e){ df.style.transition='none'; df.style.transform=edge(e); requestAnimationFrame(function(){ df.style.transition='transform .35s cubic-bezier(.16,1,.3,1)'; df.style.transform='translate(0,0)'; }); });
+      db.addEventListener('pointerleave',function(e){ df.style.transform=edge(e); }); df.style.transform='translateY(100%)'; }
+  })();
+
+  /* 22 kinetic II: typewriter + split-flap + odometer */
+  (function(){
+    var CH='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    var tw=document.getElementById('typew'); if(tw){ var TXT='design, in motion.'; function type(){ var i=0; tw.textContent=''; var iv=setInterval(function(){ i++; tw.innerHTML=TXT.slice(0,i)+'<span style="opacity:.5">|</span>'; if(i>=TXT.length)clearInterval(iv); },55); } type(); tw.addEventListener('click',type); }
+    var flap=document.getElementById('flap'); if(flap){ var F='MOTION'; var dgs=F.split('').map(function(){ var d=document.createElement('div'); flap.appendChild(d); return d; });
+      function roll(){ dgs.forEach(function(d,i){ var n=0; var iv=setInterval(function(){ d.textContent=CH[Math.floor(Math.random()*26)]; n++; if(n>6+i*2){ clearInterval(iv); d.textContent=F[i]; } },55); }); } roll(); flap.addEventListener('click',roll); }
+    var odo=document.getElementById('odo'); if(odo){ function setVal(v){ var s=String(v); while(s.length<3)s='0'+s; odo.innerHTML=s.split('').map(function(d){ return '<div class="dg"><i>'+d+'</i></div>'; }).join(''); }
+      setVal(204); odo.addEventListener('click',function(){ var v=Math.floor(Math.random()*900),s=String(v); while(s.length<3)s='0'+s;
+        odo.querySelectorAll('.dg i').forEach(function(el,i){ el.style.transition='transform .25s'; el.style.transform='translateY(-100%)'; setTimeout(function(){ el.textContent=s[i]; el.style.transition='none'; el.style.transform='translateY(100%)'; requestAnimationFrame(function(){ el.style.transition='transform .5s cubic-bezier(.16,1,.3,1)'; el.style.transform='translateY(0)'; }); },260); }); }); }
+  })();
+
+  /* 23 generative II: dot grid + metaballs + glitch */
+  (function(){
+    var cv=document.getElementById('gdots'); if(cv){ var ctx=cv.getContext('2d'); var mx=-99,my=-99;
+      cv.addEventListener('pointermove',function(e){ var r=cv.getBoundingClientRect(); mx=e.clientX-r.left; my=e.clientY-r.top; });
+      cv.addEventListener('pointerleave',function(){ mx=-99; my=-99; });
+      tickers.push(function(){ if(reduced||body.classList.contains('rm'))return; ctx.clearRect(0,0,cv.width,cv.height); var cols=14,rows=9;
+        for(var i=0;i<cols;i++)for(var j=0;j<rows;j++){ var x=(i+0.5)*(cv.width/cols),y=(j+0.5)*(cv.height/rows),d=Math.hypot(x-mx,y-my),s=d<40?(40-d)/40:0; ctx.fillStyle='rgba(199,240,74,'+(0.22+s*0.78)+')'; ctx.beginPath(); ctx.arc(x,y,1.3+s*2.4,0,7); ctx.fill(); } }); }
+    var mf=document.getElementById('gmeta'); if(mf){ var blobs=[]; for(var i=0;i<3;i++){ var bb=document.createElement('div'); bb.style.cssText='position:absolute;width:34px;height:34px;border-radius:50%;background:#C7F04A'; mf.appendChild(bb); blobs.push(bb); } var t=0;
+      tickers.push(function(){ if(reduced||body.classList.contains('rm'))return; t+=0.02; for(var i=0;i<blobs.length;i++){ var a=t+i*2.1; blobs[i].style.transform='translate('+(90+Math.cos(a)*55)+'px,'+(55+Math.sin(a*1.3)*30)+'px)'; } }); }
+    var gc=document.getElementById('gglitch'), gt=document.getElementById('gglitchTxt'), gw=document.getElementById('gglitchWrap');
+    if(gc){ var gx=gc.getContext('2d'); var img=gx.createImageData(gc.width,gc.height); var n=0;
+      tickers.push(function(){ if(reduced||body.classList.contains('rm'))return; n++; if(n%3===0){ for(var i=0;i<img.data.length;i+=4){ var v=Math.random()*255; img.data[i]=v;img.data[i+1]=v;img.data[i+2]=v;img.data[i+3]=36; } gx.putImageData(img,0,0); } }); }
+    if(gw&&gt){ gw.addEventListener('click',function(){ gt.style.textShadow='2px 0 var(--indigo),-2px 0 #3ab7bf'; gt.style.transform='translateX(2px)'; setTimeout(function(){ gt.style.textShadow='none'; gt.style.transform='none'; },160); }); }
+  })();
+
+  /* 24 physics + gesture */
+  (function(){
+    var cv=document.getElementById('physCanvas'); if(cv){ var ctx=cv.getContext('2d'); var balls=[],drag=null;
+      for(var i=0;i<5;i++) balls.push({x:30+i*70,y:30,vx:(Math.random()-.5)*3,vy:0,r:12,tx:0,ty:0,px:0,py:0});
+      cv.addEventListener('pointerdown',function(e){ var r=cv.getBoundingClientRect(),mx=e.clientX-r.left,my=e.clientY-r.top; balls.forEach(function(b){ if(Math.hypot(b.x-mx,b.y-my)<b.r+6){ drag=b; b.tx=mx; b.ty=my; } }); });
+      cv.addEventListener('pointermove',function(e){ if(!drag)return; var r=cv.getBoundingClientRect(); drag.px=drag.tx; drag.py=drag.ty; drag.tx=e.clientX-r.left; drag.ty=e.clientY-r.top; });
+      window.addEventListener('pointerup',function(){ if(drag){ drag.vx=(drag.tx-drag.px)*1.4||0; drag.vy=(drag.ty-drag.py)*1.4||0; } drag=null; });
+      tickers.push(function(){ if(reduced||body.classList.contains('rm'))return; ctx.clearRect(0,0,cv.width,cv.height); ctx.fillStyle='#4B3FE4';
+        balls.forEach(function(b){ if(b===drag){ b.x=b.tx; b.y=b.ty; } else { b.vy+=0.4; b.x+=b.vx; b.y+=b.vy; b.vx*=0.99; if(b.y>cv.height-b.r){ b.y=cv.height-b.r; b.vy*=-0.6; } if(b.x<b.r||b.x>cv.width-b.r){ b.vx*=-1; b.x=clamp(b.x,b.r,cv.width-b.r); } } ctx.beginPath(); ctx.arc(b.x,b.y,b.r,0,7); ctx.fill(); }); }); }
+    var card=document.getElementById('swipecard'); if(card){ var sx=0,dx=0,down=false,lastX=0,vel=0;
+      card.addEventListener('pointerdown',function(e){ down=true; sx=e.clientX; lastX=e.clientX; card.style.transition='none'; });
+      window.addEventListener('pointermove',function(e){ if(!down)return; dx=e.clientX-sx; vel=e.clientX-lastX; lastX=e.clientX; card.style.transform='translateX('+dx+'px) rotate('+(dx*0.05)+'deg)'; card.style.opacity=1-Math.min(Math.abs(dx)/240,0.6); });
+      window.addEventListener('pointerup',function(){ if(!down)return; down=false; card.style.transition='transform .4s cubic-bezier(.16,1,.3,1),opacity .4s';
+        if(Math.abs(dx)>90||Math.abs(vel)>6){ var dir=dx<0?-1:1; card.style.transform='translateX('+(dir*420)+'px) rotate('+(dir*22)+'deg)'; card.style.opacity='0'; setTimeout(function(){ card.style.transition='none'; card.style.transform='none'; card.style.opacity='1'; dx=0; },450); } else { card.style.transform='none'; card.style.opacity='1'; dx=0; } }); }
+    var fg=document.getElementById('flipgrid'), fb=document.getElementById('flipBtn'); if(fg){ for(var k=1;k<=6;k++){ var d=document.createElement('div'); d.className='fi'; d.textContent=k; d.setAttribute('data-id',k); fg.appendChild(d); }
+      if(fb) fb.addEventListener('click',function(){ var its=[].slice.call(fg.children); var first={}; its.forEach(function(it){ first[it.getAttribute('data-id')]=it.getBoundingClientRect(); });
+        its.slice().sort(function(){return Math.random()-0.5;}).forEach(function(it){ fg.appendChild(it); });
+        its.forEach(function(it){ var last=it.getBoundingClientRect(),f=first[it.getAttribute('data-id')],ddx=f.left-last.left,ddy=f.top-last.top; it.style.transition='none'; it.style.transform='translate('+ddx+'px,'+ddy+'px)'; requestAnimationFrame(function(){ it.style.transition='transform .45s cubic-bezier(.16,1,.3,1)'; it.style.transform='none'; }); }); }); }
+  })();
+
+  /* 25 scrollytelling — beat by scroll progress through the pinned container */
+  (function(){
+    var sc=document.getElementById('scrolly'); if(!sc) return; var sbg=document.getElementById('sbg');
+    var beats=sc.querySelectorAll('.beat'), cols=['#4B3FE4','#2a5a1f','#0f3a3d','#7a2f1f'], N=beats.length, curB=-1;
+    function upd(){ var r=sc.getBoundingClientRect(); var total=sc.offsetHeight-innerHeight; var p=clamp((-r.top)/Math.max(1,total),0,1); var b=Math.min(N-1,Math.floor(p*N+0.0001));
+      if(b!==curB){ curB=b; beats.forEach(function(x){ x.classList.toggle('on', +x.getAttribute('data-b')===b); }); sbg.style.background=cols[b]||cols[0]; } }
+    window.addEventListener('scroll',upd,{passive:true}); upd();
   })();
 
   /* HUD label per section */
