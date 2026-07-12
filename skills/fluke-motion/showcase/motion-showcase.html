@@ -217,6 +217,28 @@
   .txcurtain{ position:absolute; inset:0; background:var(--ink); color:#fff; display:grid; place-items:center; font-family:var(--mono); font-size:14px; letter-spacing:.1em; text-transform:uppercase; transform:translateY(-101%); }
   .txpage{ font-size:clamp(28px,5vw,52px); font-weight:800; letter-spacing:-.03em; }
 
+  /* ---- parallax ---- */
+  .plx{ position:relative; height:340px; border-radius:16px; overflow:hidden; border:1px solid var(--line-strong); }
+  .plx .layer{ position:absolute; will-change:transform; }
+  .plx .l-bg{ inset:-50px; background:radial-gradient(circle at 30% 30%,#4B3FE4,#14121F); }
+  .plx .l-mid{ inset:-30px; background:radial-gradient(circle at 70% 70%,rgba(199,240,74,.55),transparent 55%); }
+  .plx .l-fg{ inset:0; display:grid; place-items:center; }
+  .plx .l-fg h3{ color:#fff; font-size:clamp(30px,6vw,64px); font-weight:800; letter-spacing:-.03em; mix-blend-mode:difference; }
+
+  /* ---- horizontal gallery ---- */
+  .hgal{ display:flex; gap:16px; overflow-x:auto; scroll-snap-type:x mandatory; padding-bottom:10px; }
+  .hgal .hcard{ flex:0 0 clamp(220px,26vw,300px); aspect-ratio:4/5; border-radius:14px; scroll-snap-align:start; display:flex; align-items:flex-end; padding:16px; color:#fff; font-weight:800; font-size:20px; }
+
+  /* ---- reveals beyond fade ---- */
+  .revbox{ position:relative; height:280px; border-radius:16px; overflow:hidden; border:1px solid var(--line-strong); }
+  .revbox .rimg{ position:absolute; inset:0; background:linear-gradient(135deg,#4B3FE4,#8b7bff 40%,#C7F04A); will-change:clip-path,filter; }
+  .revctl{ display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
+
+  /* ---- svg craft ---- */
+  .svgrow{ display:flex; gap:30px; flex-wrap:wrap; align-items:center; }
+  .svgcell{ display:flex; flex-direction:column; gap:8px; align-items:center; cursor:none; }
+  .svgcell .cap{ font-family:var(--mono); font-size:9.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); }
+
   @media (prefers-reduced-motion: reduce){
     .hero-title .line span{ transform:none; } .hero-sub{ opacity:1; }
     .rv{ opacity:1; transform:none; }
@@ -508,10 +530,84 @@
   </div>
 </section>
 
-<!-- 15 FAQ + END -->
-<section data-label="15 · Accordion + count-up">
+<!-- 16 PARALLAX -->
+<section data-label="16 · Parallax + depth">
   <div class="explain">
-    <div class="tag"><b>15</b> FAQ + stats</div>
+    <div class="tag"><b>16</b> Depth promo</div>
+    <h2>Layers move at their own speed.</h2>
+    <p class="desc">The oldest scroll trick, done right — background lags, foreground leads, and the whole thing tilts to your pointer for depth. Scroll + move the mouse.</p>
+    <div class="spec">
+      <div><span>Scroll</span>each layer translates at a different rate (bg slow, fg fast)</div>
+      <div><span>Pointer</span>layers shift on pointer → fake depth (fine-pointer only)</div>
+      <div><span>A11y</span>parallax is a vestibular trigger — off under reduced-motion</div>
+    </div>
+  </div>
+  <div class="demo">
+    <div class="plx" id="plx">
+      <div class="layer l-bg" id="plxBg"></div>
+      <div class="layer l-mid" id="plxMid"></div>
+      <div class="layer l-fg" id="plxFg"><h3>DEPTH</h3></div>
+    </div>
+  </div>
+</section>
+
+<!-- 17 HORIZONTAL GALLERY -->
+<section data-label="17 · Horizontal + snap">
+  <div class="explain">
+    <div class="tag"><b>17</b> Work gallery</div>
+    <h2>Sideways, on purpose.</h2>
+    <p class="desc">A horizontal rail inside a vertical page — CSS scroll-snap does the heavy lifting; trackpad or drag to move.</p>
+    <div class="spec">
+      <div><span>Snap</span><code>scroll-snap-type:x mandatory</code> — cards lock into place</div>
+      <div><span>Native</span>no scroll-jack — the page scrolls normally around it</div>
+    </div>
+  </div>
+  <div class="demo"><div class="hgal" id="hgal"></div></div>
+</section>
+
+<!-- 18 REVEALS BEYOND FADE -->
+<section data-label="18 · Reveals beyond fade">
+  <div class="explain">
+    <div class="tag"><b>18</b> Image reveal</div>
+    <h2>Not everything fades in.</h2>
+    <p class="desc">Fade is the floor. A clip-curtain, a blur-to-focus, or a pixel-resolve all read more crafted. Replay each.</p>
+    <div class="spec">
+      <div><span>Curtain</span>clip-path wipes the image in from one edge</div>
+      <div><span>Blur</span>focus resolves from soft to sharp</div>
+      <div><span>Pixel</span>resolves from blocky/soft to crisp</div>
+    </div>
+  </div>
+  <div class="demo">
+    <div class="revbox"><div class="rimg" id="rimg"></div></div>
+    <div class="revctl"><button class="kt-btn" data-rev="curtain">↻ Curtain</button><button class="kt-btn" data-rev="blur">↻ Blur→focus</button><button class="kt-btn" data-rev="pixel">↻ Pixelate</button></div>
+  </div>
+</section>
+
+<!-- 19 SVG CRAFT -->
+<section data-label="19 · SVG craft">
+  <div class="explain">
+    <div class="tag"><b>19</b> Iconography</div>
+    <h2>Vectors that draw themselves.</h2>
+    <p class="desc">The workhorse of logo &amp; icon motion — a stroke draws a path, shapes morph, icons react. Hover/click each.</p>
+    <div class="spec">
+      <div><span>Draw</span>a checkmark draws on via <code>stroke-dashoffset</code></div>
+      <div><span>Morph</span>a blob interpolates between two shapes, looping</div>
+      <div><span>Icon</span>a menu icon springs into an × on click</div>
+    </div>
+  </div>
+  <div class="demo">
+    <div class="svgrow">
+      <div class="svgcell" id="svgDraw"><svg width="70" height="70" viewBox="0 0 70 70"><path id="svgCheck" d="M14 37 L30 53 L57 18" fill="none" stroke="var(--indigo)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="cap">draw (hover)</span></div>
+      <div class="svgcell"><svg width="82" height="82" viewBox="0 0 100 100"><path id="svgBlob" fill="rgba(75,63,228,.16)" stroke="var(--indigo)" stroke-width="2"/></svg><span class="cap">morph (loop)</span></div>
+      <div class="svgcell" id="svgMenu"><svg width="52" height="52" viewBox="0 0 24 24" stroke="var(--ink)" stroke-width="2" stroke-linecap="round"><line id="ml1" x1="4" y1="8" x2="20" y2="8"/><line id="ml2" x1="4" y1="16" x2="20" y2="16"/></svg><span class="cap">menu → × (click)</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 20 FAQ + END -->
+<section data-label="20 · Accordion + count-up">
+  <div class="explain">
+    <div class="tag"><b>20</b> FAQ + stats</div>
     <h2>Quiet motion, still craft.</h2>
     <p class="desc">Product-UI restraint: an accordion that highlights on hover and eases open, and a stat band that counts up once when it enters view.</p>
     <div class="spec">
@@ -736,6 +832,61 @@
     if(pb) pb.addEventListener('click',function(){ curtain.style.transition='none'; curtain.style.transform='translateY(0)'; requestAnimationFrame(function(){ setTimeout(function(){ curtain.style.transition='transform .7s cubic-bezier(.76,0,.24,1)'; curtain.style.transform='translateY(-101%)'; },450); }); });
     if(nb) nb.addEventListener('click',function(){ function swap(){ toggled=!toggled; page.textContent=toggled?'Page B':'Page A'; }
       if(document.startViewTransition){ document.startViewTransition(function(){ swap(); }); } else { page.style.transition='opacity .2s'; page.style.opacity='0'; setTimeout(function(){ swap(); page.style.opacity='1'; },200); } });
+  })();
+
+  /* 16 parallax + depth */
+  (function(){
+    var box=document.getElementById('plx'); if(!box) return;
+    var bg=document.getElementById('plxBg'),mid=document.getElementById('plxMid'),fg=document.getElementById('plxFg');
+    var mpx=0,mpy=0,cx=0,cy=0;
+    box.addEventListener('pointermove',function(e){ var r=box.getBoundingClientRect(); mpx=(e.clientX-r.left)/r.width-0.5; mpy=(e.clientY-r.top)/r.height-0.5; });
+    box.addEventListener('pointerleave',function(){ mpx=0; mpy=0; });
+    tickers.push(function(){ var rm=reduced||body.classList.contains('rm');
+      cx+=((rm?0:mpx)-cx)*0.08; cy+=((rm?0:mpy)-cy)*0.08;
+      var r=box.getBoundingClientRect(); var sc=rm?0:clamp(((innerHeight/2)-(r.top+r.height/2))/innerHeight,-1,1);
+      bg.style.transform='translate('+(cx*14)+'px,'+((cy*14)+(sc*30))+'px)';
+      mid.style.transform='translate('+(cx*30)+'px,'+((cy*30)+(sc*60))+'px)';
+      fg.style.transform='translate('+(cx*8)+'px,'+((cy*8)+(sc*-20))+'px)';
+    });
+  })();
+
+  /* 17 horizontal gallery */
+  (function(){
+    var g=document.getElementById('hgal'); if(!g) return;
+    var cards=[['Northwind','#4B3FE4,#8b7bff'],['Cadence','#C7F04A,#2a5a1f'],['Parallel','#3ab7bf,#123'],['Vantage','#f0a05a,#7a2f1f'],['Atlas','#b58bff,#14121F']];
+    g.innerHTML=cards.map(function(c){ return '<div class="hcard" style="background:linear-gradient(135deg,'+c[1]+')">'+c[0]+'</div>'; }).join('');
+  })();
+
+  /* 18 reveals beyond fade */
+  (function(){
+    var img=document.getElementById('rimg'); if(!img) return;
+    function run(mode){ var t0=null,dur=800;
+      function step(ts){ if(!t0)t0=ts; var p=clamp((ts-t0)/dur,0,1);
+        if(mode==='curtain'){ img.style.filter='none'; img.style.clipPath='inset(0 '+(100-100*p)+'% 0 0)'; }
+        else if(mode==='blur'){ img.style.clipPath='none'; img.style.filter='blur('+((1-p)*18)+'px)'; }
+        else { img.style.clipPath='none'; img.style.filter='blur('+((1-p)*9)+'px) contrast('+(1+(1-p)*1.6)+')'; }
+        if(p<1) requestAnimationFrame(step); else { img.style.filter='none'; img.style.clipPath='none'; } }
+      requestAnimationFrame(step); }
+    document.querySelectorAll('[data-rev]').forEach(function(btn){ btn.addEventListener('click',function(){ run(btn.getAttribute('data-rev')); }); });
+    run('curtain');
+  })();
+
+  /* 19 svg craft: draw + morph + menu-to-x */
+  (function(){
+    var check=document.getElementById('svgCheck');
+    if(check){ var len=check.getTotalLength(); check.style.strokeDasharray=len; check.style.strokeDashoffset=len;
+      var cell=document.getElementById('svgDraw');
+      function draw(){ check.style.transition='none'; check.style.strokeDashoffset=len; requestAnimationFrame(function(){ check.style.transition='stroke-dashoffset .7s cubic-bezier(.16,1,.3,1)'; check.style.strokeDashoffset=0; }); }
+      if(cell) cell.addEventListener('pointerenter',draw); draw(); }
+    var blob=document.getElementById('svgBlob');
+    if(blob){ var A='M50 12 C68 12 78 30 78 48 C78 68 62 74 50 74 C32 74 14 60 16 42 C14 22 32 12 50 12 Z', B='M50 16 C66 6 82 22 76 42 C84 60 64 76 50 68 C32 78 10 58 18 40 C6 20 30 8 50 16 Z';
+      blob.setAttribute('d',A); var flip=false;
+      tickers.push(function(){ if(reduced||body.classList.contains('rm'))return; if(!blob.__t){blob.__t=0;} blob.__t+=0.01; if(blob.__t>=1){ blob.__t=0; flip=!flip; blob.setAttribute('d', flip?B:A); } }); }
+    var menu=document.getElementById('svgMenu');
+    if(menu){ var l1=document.getElementById('ml1'),l2=document.getElementById('ml2'),open=false;
+      l1.style.transformOrigin='center'; l2.style.transformOrigin='center';
+      menu.addEventListener('click',function(){ open=!open; l1.style.transition='transform .4s cubic-bezier(.34,1.56,.64,1)'; l2.style.transition=l1.style.transition;
+        l1.style.transform=open?'translateY(4px) rotate(45deg)':'none'; l2.style.transform=open?'translateY(-4px) rotate(-45deg)':'none'; }); }
   })();
 
   /* HUD label per section */
