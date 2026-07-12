@@ -131,6 +131,20 @@ gsap.ticker.lagSmoothing(0);   // mandatory — GSAP's lag compensation fights L
 
 **Gold-list "how we built it" sources:** Codrops Case Study tag (Rocca, Guignand, 4WIDE, Podium, Shopify Everywhere, Obys, Contassot, Spitzer) · Awwwards case studies (Lusion, Igloo, Locomotive, DeSo, BSMNT Foundry, Bruno Simon) · luruke/awesome-casestudy (community index) · Active Theory Medium · JOYCO Hub WebGL scroll-sync log · Lenis README · Osmo Vault.
 
+## Field teardown: digital-culture.valmax.dev
+
+A real, mid-tier instance of the **Pattern-1 modern-portfolio stack** on WordPress — useful because it shows the stack applied *with restraint* (not a maximalist showpiece). Reverse-engineered live (Playwright + bundle source). A playable vanilla recreation lives at `showcase/dc-teardown.html`.
+
+**Stack (all bundled + module-scoped, so `window.gsap`/`window.Lenis` read undefined — detect via `<html class="lenis">` and reading the bundle):** Lenis (smooth scroll) · GSAP + ScrollTrigger · native ScrollTimeline (progressive enhancement) · AOS (fade reveals) · Splitting.js (word-level) · Swiper (fade + slide sliders, autoplay OFF) · a custom draggable carousel with a **contextual cursor** (morphs to DRAG / NEXT / BACK over the slider) · Ukiyo + Lottie present in the bundle but **not applied on the homepage**.
+
+**The seven moves:** (1) Lenis smooth scroll — the highest-leverage single effect, carries most of the "premium" feel; (2) per-section theme/background crossfade on scroll; (3) fade reveals (opacity, `transform:none`); (4) Splitting word reveal on titles; (5) interactive industries list — active item highlights + background image follows the selection; (6) draggable insights carousel + the contextual cursor; (7) hover craft (fill-invert buttons ~180–450ms, accordion highlight).
+
+**Two lessons (what NOT to copy):**
+- **Zero reduced-motion handling** — no `prefers-reduced-motion` in CSS *or* JS (`matchMedia` used only for breakpoints), despite Lenis smooth-scroll being a prime vestibular trigger. A motion-heavy site must ship the reduced-motion parallel + an in-page toggle (the recreation does; the original doesn't).
+- **`transition: all` on ~94% of elements** — a base reset (`* { transition: all … }`) that makes the browser watch every property on every node; scope transitions to the properties that actually change.
+
+**Two lessons (what works):** motion inits `onUserInteraction` (defers heavy library boot until first scroll/move — good for load perf); and the motion is **opacity/crossfade/smooth-scroll-driven, not transform-parallax** — proof that the modern-portfolio "feel" comes mostly from Lenis inertia + tasteful reveals, not stacked GPU effects.
+
 ## How to use this file
 
 When a user asks for "a site that feels like awwwards": (1) pick the genre pattern (§1–6) matching their content; (2) apply the meta-contract (§0) — one clock, one scroll authority, one lerp constant, motion tokens; (3) budget spectacle to brand moments only; (4) design the reduced-motion parallel from day one; (5) individual technique details live in the other reference files — signature-scroll.md, signature-cursor-hover.md, kinetic-typography.md, generative-interactive.md.

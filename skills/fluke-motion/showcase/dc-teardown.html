@@ -1,0 +1,355 @@
+<title>Digital Culture — Motion Teardown</title>
+<style>
+  :root{
+    --paper:#ECEBFF; --ink:#14121F; --indigo:#4B3FE4; --lime:#C7F04A;
+    --muted:#6A6683; --line:rgba(20,18,31,.14); --card:#F6F5FF;
+    --mono:ui-monospace,"SF Mono","Cascadia Mono",Consolas,monospace;
+    --grotesk:"Helvetica Neue",Arial,system-ui,sans-serif;
+    --lerp-note:"one clock · one lerp = 0.09";
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;height:100%;}
+  body{background:var(--ink);color:var(--ink);font-family:var(--grotesk);overflow:hidden;}
+  ::selection{background:var(--lime);color:var(--ink);}
+
+  /* ---------- virtual smooth-scroll stage ---------- */
+  .stage{position:fixed;inset:0;overflow:hidden;background:var(--paper);}
+  .scroll{will-change:transform;}
+  section{padding:clamp(56px,9vh,110px) clamp(20px,6vw,80px);min-height:92vh;position:relative;display:flex;flex-direction:column;justify-content:center;}
+  section.hero{min-height:100vh;}
+  .tag{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.6;display:flex;gap:10px;align-items:center;margin-bottom:22px;}
+  .tag .n{color:var(--indigo);font-weight:700;}
+  .tag.on-dark .n{color:var(--lime);}
+  h1,h2{font-weight:800;letter-spacing:-.03em;line-height:.98;margin:0;text-wrap:balance;}
+  h1{font-size:clamp(44px,8.5vw,120px);}
+  h2{font-size:clamp(30px,5vw,66px);}
+  .lead{max-width:52ch;font-size:clamp(15px,1.5vw,19px);line-height:1.55;color:var(--muted);margin-top:22px;}
+
+  /* progress rail */
+  .rail{position:fixed;top:0;left:0;height:3px;background:var(--lime);width:0;z-index:40;}
+  .hud{position:fixed;right:16px;top:14px;z-index:41;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;display:flex;gap:12px;align-items:center;color:var(--ink);mix-blend-mode:difference;}
+  .toggle{border:1px solid currentColor;padding:6px 10px;cursor:pointer;background:transparent;color:inherit;font:inherit;letter-spacing:.1em;text-transform:uppercase;}
+
+  /* reveal */
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1);}
+  .reveal.in{opacity:1;transform:none;}
+
+  /* split words */
+  .split .w{display:inline-block;overflow:hidden;vertical-align:top;}
+  .split .w > span{display:inline-block;transform:translateY(110%);transition:transform .8s cubic-bezier(.16,1,.3,1);}
+  .split.in .w > span{transform:none;}
+
+  /* ---------- hero ---------- */
+  .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;min-height:100vh;}
+  @media(max-width:820px){.hero{grid-template-columns:1fr;}}
+  .hero .scrolltip{margin-top:30px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;opacity:.55;}
+  .dotq{width:min(38vh,320px);aspect-ratio:1;margin-left:auto;}
+  .cross{width:16px;height:16px;position:relative;display:inline-block;}
+  .cross::before,.cross::after{content:"";position:absolute;background:currentColor;}
+  .cross::before{left:47%;top:0;width:6%;height:100%;}
+  .cross::after{top:47%;left:0;height:6%;width:100%;}
+
+  /* buttons */
+  .btn{display:inline-flex;align-items:center;gap:14px;font-weight:700;font-size:15px;padding:16px 22px;border-radius:12px;cursor:pointer;border:1px solid var(--ink);text-decoration:none;position:relative;overflow:hidden;}
+  .btn .lbl{position:relative;z-index:1;}
+  .btn .box{position:relative;z-index:1;display:grid;place-items:center;width:34px;height:34px;border-radius:8px;background:var(--indigo);color:#fff;transition:transform .5s cubic-bezier(.16,1,.3,1);}
+  .btn:hover .box{transform:rotate(90deg);}
+  .btn.dark{background:var(--ink);color:var(--paper);}
+  .btn.dark::before{content:"";position:absolute;inset:0;background:var(--lime);transform:translateY(101%);transition:transform .4s cubic-bezier(.16,1,.3,1);}
+  .btn.dark:hover::before{transform:translateY(0);}
+  .btn.dark:hover{color:var(--ink);}
+  .btn.dark:hover .box{background:var(--ink);color:var(--lime);}
+
+  /* ---------- section grounds (theme transition) ---------- */
+  .s-cap{background:transparent;}
+  .cap-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(20px,4vw,60px);}
+  @media(max-width:820px){.cap-grid{grid-template-columns:1fr;}}
+  .cap-list{display:flex;flex-direction:column;gap:12px;}
+  .cap-row{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:20px;border-radius:12px;background:var(--card);border:1px solid var(--line);transition:background .3s,transform .3s;cursor:pointer;}
+  .cap-row:hover{background:#fff;transform:translateX(6px);}
+  .cap-row .box{width:38px;height:38px;border-radius:9px;background:var(--indigo);color:#fff;display:grid;place-items:center;flex:0 0 auto;transition:transform .5s cubic-bezier(.16,1,.3,1);}
+  .cap-row:hover .box{transform:rotate(90deg);}
+  .cap-sticky{position:relative;}
+  .cap-visual{position:sticky;top:24px;aspect-ratio:4/5;border-radius:16px;overflow:hidden;background:linear-gradient(135deg,var(--indigo),#8b7bff);display:grid;place-items:center;color:#fff;font-family:var(--mono);font-size:12px;letter-spacing:.1em;}
+
+  /* ---------- industries (interactive list + bg swap) ---------- */
+  .s-ind{color:#fff;border-radius:24px;overflow:hidden;position:relative;isolation:isolate;}
+  .ind-bg{position:absolute;inset:0;z-index:-1;transition:opacity .8s ease;}
+  .ind-fg{position:absolute;inset:0;z-index:-1;background:rgba(10,8,24,.62);}
+  .ind-list{display:flex;flex-direction:column;gap:2px;max-width:640px;}
+  .ind-item{display:flex;align-items:center;gap:14px;font-size:clamp(22px,3.4vw,44px);font-weight:800;letter-spacing:-.02em;color:rgba(255,255,255,.55);cursor:pointer;padding:4px 0;transition:color .3s;}
+  .ind-item .c{opacity:0;color:var(--lime);transition:opacity .25s;}
+  .ind-item.active{color:var(--lime);}
+  .ind-item.active .c{opacity:1;}
+
+  /* ---------- insights (draggable carousel + custom cursor) ---------- */
+  .s-ins{background:var(--indigo);color:#fff;border-radius:24px;}
+  .carousel{position:relative;margin-top:34px;overflow:hidden;cursor:none;}
+  .track{display:flex;gap:20px;will-change:transform;user-select:none;}
+  .slide{flex:0 0 min(360px,72vw);}
+  .slide .thumb{aspect-ratio:16/11;border-radius:14px;overflow:hidden;display:grid;place-items:end;padding:16px;position:relative;}
+  .slide .thumb .read{background:var(--lime);color:var(--ink);font-weight:700;font-size:13px;padding:8px 12px;border-radius:8px;display:inline-flex;gap:8px;align-items:center;}
+  .slide h3{font-size:19px;margin:14px 0 4px;font-weight:700;line-height:1.2;}
+  .slide .eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--lime);}
+  .curcursor{position:absolute;top:0;left:0;width:66px;height:66px;margin:-33px 0 0 -33px;border-radius:999px;background:var(--lime);color:var(--ink);display:grid;place-items:center;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.08em;pointer-events:none;transform:scale(0);transition:transform .25s cubic-bezier(.16,1,.3,1),background-color .2s;z-index:5;}
+
+  /* ---------- faq (accordion) ---------- */
+  .faq-item{border-top:1px solid var(--line);}
+  .faq-q{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:22px 16px;cursor:pointer;font-weight:700;font-size:clamp(16px,2vw,22px);border-radius:10px;transition:background .3s,padding-left .3s;}
+  .faq-q:hover{background:#DEDAFE;padding-left:24px;}
+  .faq-q .pm{width:20px;height:20px;flex:0 0 auto;transition:transform .4s cubic-bezier(.16,1,.3,1);}
+  .faq-item.open .faq-q .pm{transform:rotate(45deg);}
+  .faq-a{max-height:0;overflow:hidden;transition:max-height .45s cubic-bezier(.16,1,.3,1);}
+  .faq-a p{padding:0 16px 22px;color:var(--muted);max-width:60ch;margin:0;}
+
+  .foot{background:var(--ink);color:var(--paper);border-radius:24px;text-align:center;}
+  .foot h2{margin-bottom:24px;}
+
+  @media (prefers-reduced-motion: reduce){
+    .reveal{opacity:1 !important;transform:none !important;transition:none !important;}
+    .split .w>span{transform:none !important;transition:none !important;}
+  }
+  body.rm .reveal{opacity:1 !important;transform:none !important;}
+  body.rm .split .w>span{transform:none !important;}
+</style>
+
+<div class="rail" id="rail"></div>
+<div class="hud">
+  <span id="hudLabel">01 · SMOOTH SCROLL</span>
+  <button class="toggle" id="rmToggle" aria-pressed="false">motion: on</button>
+</div>
+
+<div class="stage" id="stage">
+  <div class="scroll" id="scroll">
+
+    <!-- 01 HERO + smooth scroll -->
+    <section class="hero" data-bg="#ECEBFF" data-fg="#14121F" data-label="01 · SMOOTH SCROLL (Lenis-style)">
+      <div>
+        <div class="tag"><span class="n">01</span> Smooth scroll · the star</div>
+        <h1 class="split" id="heroTitle"><span class="w"><span>Experience</span></span> <span class="w"><span>that moves.</span></span></h1>
+        <p class="lead reveal">Teardown of <b>digital-culture.valmax.dev</b> — its seven interactive moves, rebuilt so you can play with each one. Scroll: notice the page <b>glides</b> with momentum instead of snapping. That eased, inertial feel is the single biggest reason the original reads as premium.</p>
+        <div class="scrolltip">↓ scroll / drag — everything runs on one clock, one lerp (0.09)</div>
+      </div>
+      <canvas class="dotq" id="dotq" width="640" height="640"></canvas>
+    </section>
+
+    <!-- 02 THEME TRANSITION + 03 reveal + capabilities -->
+    <section class="s-cap" data-bg="#E9F7C2" data-fg="#14121F" data-label="02 · SECTION THEME SHIFT">
+      <div class="tag"><span class="n">02·03</span> Theme shift on scroll · fade-in reveals</div>
+      <h2 class="split">Product Elevation</h2>
+      <p class="lead reveal">The whole ground crossfades as you enter a section — watch the background go lime here. Each row below fades up as it arrives (reveal-on-scroll).</p>
+      <div class="cap-grid" style="margin-top:40px;">
+        <div class="cap-sticky"><div class="cap-visual reveal">STICKY VISUAL<br>(pins while list scrolls)</div></div>
+        <div class="cap-list" id="capList"></div>
+      </div>
+    </section>
+
+    <!-- 05 INDUSTRIES interactive list -->
+    <section class="s-ind" data-bg="#14121F" data-fg="#FFFFFF" data-label="05 · INTERACTIVE LIST + BG SWAP">
+      <div class="ind-bg" id="indBg"></div><div class="ind-fg"></div>
+      <div class="tag on-dark"><span class="n">05</span> Interactive list · background follows selection</div>
+      <h2 class="split" style="color:#fff;">Industries<br>we empower</h2>
+      <p class="lead reveal" style="color:rgba(255,255,255,.7);">Hover an industry — the background image swaps to match, and the active row lights up lime. Selection drives the visual.</p>
+      <div class="ind-list" id="indList" style="margin-top:34px;"></div>
+    </section>
+
+    <!-- 06 INSIGHTS carousel + custom cursor -->
+    <section class="s-ins" data-bg="#4B3FE4" data-fg="#FFFFFF" data-label="06 · DRAG CAROUSEL + CONTEXTUAL CURSOR">
+      <div class="tag on-dark"><span class="n">06</span> Draggable carousel · cursor becomes a control</div>
+      <h2 class="split" style="color:#fff;">Ideas that move<br>business forward</h2>
+      <p class="lead reveal" style="color:rgba(255,255,255,.8);">Drag the cards sideways — they coast with inertia. Move your pointer over them: the cursor morphs into a <b>DRAG / NEXT / BACK</b> control depending on where you are.</p>
+      <div class="carousel" id="carousel">
+        <div class="track" id="track"></div>
+        <div class="curcursor" id="curcursor">DRAG</div>
+      </div>
+    </section>
+
+    <!-- 04 already shown (split) + 07 FAQ -->
+    <section data-bg="#ECEBFF" data-fg="#14121F" data-label="07 · HOVER + ACCORDION">
+      <div class="tag"><span class="n">04·07</span> Split-text titles · hover highlight · accordion</div>
+      <h2 class="split">Questions<br>you may have</h2>
+      <div id="faq" style="margin-top:34px;max-width:820px;"></div>
+    </section>
+
+    <section class="foot" data-bg="#14121F" data-fg="#ECEBFF" data-label="END">
+      <div class="tag on-dark" style="justify-content:center;"><span class="n">✦</span> teardown complete</div>
+      <h2>Seven moves,<br>one motion system.</h2>
+      <p class="lead reveal" style="margin:0 auto;color:rgba(236,235,255,.7);">Smooth scroll · theme shift · reveals · split-text · interactive list · drag carousel + cursor · hover craft. All on one shared clock and one lerp constant — the "one material" contract.</p>
+      <div style="margin-top:30px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+        <a class="btn dark"><span class="lbl">Rebuild any of these</span><span class="box"><span class="cross"></span></span></a>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<script>
+(function(){
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var body=document.body, stage=document.getElementById('stage'), scroll=document.getElementById('scroll');
+  var rail=document.getElementById('rail'), hudLabel=document.getElementById('hudLabel');
+  var LERP=0.09;
+  var clamp=function(v,a,b){return Math.max(a,Math.min(b,v));};
+
+  /* ---------- content injection ---------- */
+  var caps=["API & CMS Development","Concepts & Prototypes","Full-Stack Mobile & Web","Product Experience (PXM)","UX/UI & Design Systems"];
+  document.getElementById('capList').innerHTML=caps.map(function(c){return '<div class="cap-row reveal"><span>'+c+'</span><span class="box"><span class="cross"></span></span></div>';}).join('');
+
+  var industries=[
+    {n:"Fashion & Luxury",g:"linear-gradient(135deg,#b58bff,#4B3FE4)"},
+    {n:"Financial & Fintech",g:"linear-gradient(135deg,#4B3FE4,#0f2c6b)"},
+    {n:"Grocery & Food",g:"linear-gradient(135deg,#7bbf3a,#14121F)"},
+    {n:"Healthcare",g:"linear-gradient(135deg,#3ab7bf,#123)"},
+    {n:"Life Sciences & Biotech",g:"linear-gradient(135deg,#C7F04A,#2a5a1f)"},
+    {n:"Pharmaceutical",g:"linear-gradient(135deg,#e0d6ff,#4B3FE4)"},
+    {n:"Retail & Consumer",g:"linear-gradient(135deg,#ff9f6e,#7a2f1f)"},
+    {n:"Telecommunications",g:"linear-gradient(135deg,#6e8bff,#101a3a)"}
+  ];
+  var indBg=document.getElementById('indBg'), indList=document.getElementById('indList');
+  indBg.style.background=industries[0].g;
+  indList.innerHTML=industries.map(function(it,i){return '<div class="ind-item'+(i===0?' active':'')+'" data-i="'+i+'"><span>'+it.n+'</span><span class="c cross" style="width:20px;height:20px;"></span></div>';}).join('');
+  indList.querySelectorAll('.ind-item').forEach(function(el){
+    el.addEventListener('pointerenter',function(){
+      indList.querySelectorAll('.ind-item').forEach(function(x){x.classList.remove('active');});
+      el.classList.add('active');
+      indBg.style.background=industries[+el.dataset.i].g;
+    });
+  });
+
+  var insights=[
+    {e:"Digital Product",t:"AI in Pharma: Transforming the Industry",g:"linear-gradient(135deg,#f0a05a,#c05a9a)"},
+    {e:"Strategy",t:"Turning digital noise into systems that think",g:"linear-gradient(135deg,#6e8bff,#4B3FE4)"},
+    {e:"Design",t:"Motion as an explanatory device, not decoration",g:"linear-gradient(135deg,#C7F04A,#3a6a2a)"},
+    {e:"Engineering",t:"One clock, one lerp: the award-site contract",g:"linear-gradient(135deg,#b58bff,#14121F)"},
+    {e:"Research",t:"Why smooth scroll makes a page feel expensive",g:"linear-gradient(135deg,#3ab7bf,#123)"}
+  ];
+  document.getElementById('track').innerHTML=insights.map(function(a){return '<div class="slide"><div class="thumb" style="background:'+a.g+'"><span class="read">READ <span class="cross" style="width:12px;height:12px;"></span></span></div><div class="eyebrow">'+a.e+'</div><h3>'+a.t+'</h3></div>';}).join('');
+
+  var faqs=[
+    {q:"Can you match our existing motion language?",a:"Yes — the teardown method captures a site's easing, durations and lerp constant so new work reads as one system, not a bolt-on."},
+    {q:"Does heavy motion hurt accessibility?",a:"It can. That's why this demo ships a reduced-motion toggle and honors the OS setting — the original site notably does not."},
+    {q:"Is smooth scroll worth the complexity?",a:"For a brand/portfolio surface, the eased momentum is the highest-leverage single effect. For a dashboard, skip it."}
+  ];
+  document.getElementById('faq').innerHTML=faqs.map(function(f){return '<div class="faq-item"><div class="faq-q"><span>'+f.q+'</span><span class="pm cross"></span></div><div class="faq-a"><p>'+f.a+'</p></div></div>';}).join('');
+  document.querySelectorAll('.faq-item').forEach(function(item){
+    item.querySelector('.faq-q').addEventListener('click',function(){
+      var open=item.classList.toggle('open');
+      var a=item.querySelector('.faq-a');
+      a.style.maxHeight=open?a.scrollHeight+'px':0;
+    });
+  });
+
+  /* ---------- dot-matrix Q on canvas ---------- */
+  (function(){
+    var cv=document.getElementById('dotq'), ctx=cv.getContext('2d');
+    // build a "9/Q" from a grid mask
+    var mask=["....xxxxx...","..xxxxxxxx..",".xxx....xxx.","xxx......xxx","xxx......xxx","xxx......xxx",".xxx....xxxx","..xxxxxxxxxx","....xxxx.xxx","........xxx.",".......xxx..","......xxx..."];
+    var cols=mask[0].length, rows=mask.length, cell=cv.width/cols;
+    ctx.strokeStyle="#4B3FE4"; ctx.lineWidth=2.5;
+    for(var y=0;y<rows;y++)for(var x=0;x<cols;x++){ if(mask[y][x]==='x'){ ctx.beginPath(); ctx.arc(x*cell+cell/2,y*cell+cell/2,cell*0.34,0,7); ctx.stroke(); } }
+  })();
+
+  /* ---------- custom cursor over carousel ---------- */
+  var carousel=document.getElementById('carousel'), track=document.getElementById('track'), cur=document.getElementById('curcursor');
+  var curX=0,curY=0,curTX=0,curTY=0;
+  carousel.addEventListener('pointerenter',function(){ if(!reduced&&!body.classList.contains('rm')) cur.style.transform='translate('+curTX+'px,'+curTY+'px) scale(1)'; });
+  carousel.addEventListener('pointerleave',function(){ cur.style.transform='translate('+curTX+'px,'+curTY+'px) scale(0)'; });
+  carousel.addEventListener('pointermove',function(e){
+    var r=carousel.getBoundingClientRect(); curTX=e.clientX-r.left; curTY=e.clientY-r.top;
+    var third=r.width/3; cur.textContent = dragging?'DRAG': (curTX<third?'BACK':curTX>third*2?'NEXT':'DRAG');
+    cur.style.background = (cur.textContent==='DRAG')?'var(--lime)':'#fff';
+  });
+
+  /* ---------- carousel drag with inertia ---------- */
+  var trackX=0, trackTarget=0, trackVel=0, dragging=false, lastPX=0, maxDrag=0;
+  function measure(){ maxDrag=Math.max(0, track.scrollWidth - carousel.clientWidth + 24); }
+  carousel.addEventListener('pointerdown',function(e){ dragging=true; lastPX=e.clientX; trackVel=0; carousel.setPointerCapture&&carousel.setPointerCapture(e.pointerId); });
+  window.addEventListener('pointermove',function(e){ if(!dragging)return; var dx=e.clientX-lastPX; lastPX=e.clientX; trackTarget=clamp(trackTarget - dx, -0, maxDrag); trackVel=dx; });
+  window.addEventListener('pointerup',function(){ if(!dragging)return; dragging=false; trackTarget=clamp(trackTarget - trackVel*6, 0, maxDrag); });
+
+  /* clicking BACK/NEXT zones pages the carousel */
+  carousel.addEventListener('click',function(e){ if(Math.abs(trackVel)>2)return; var r=carousel.getBoundingClientRect(); var x=e.clientX-r.left,third=r.width/3; var page=Math.min(360,carousel.clientWidth*0.8); if(x<third) trackTarget=clamp(trackTarget-page,0,maxDrag); else if(x>third*2) trackTarget=clamp(trackTarget+page,0,maxDrag); });
+
+  /* ---------- reveal + split observers (based on virtual scroll) ---------- */
+  var revealEls=[].slice.call(document.querySelectorAll('.reveal'));
+  var splitEls=[].slice.call(document.querySelectorAll('.split'));
+  splitEls.forEach(function(s){ /* wrap already inline for hero/titles: ensure .w structure for plain h2 */
+    if(!s.querySelector('.w')){ var txt=s.innerHTML; s.innerHTML=txt.split('<br>').map(function(line){ return '<span class="w"><span>'+line+'</span></span>'; }).join('<br>'); }
+  });
+
+  /* ---------- section theme transition ---------- */
+  var sections=[].slice.call(document.querySelectorAll('section'));
+  var bgLayer=stage; // paper bg animated
+  stage.style.transition='background-color .6s ease, color .6s ease';
+
+  /* ---------- one clock ---------- */
+  var vh=window.innerHeight, contentH=0;
+  function resize(){ vh=window.innerHeight; contentH=scroll.scrollHeight; measure(); }
+  window.addEventListener('resize',resize);
+
+  var target=0, current=0;
+  function onWheel(e){ if(reduced||body.classList.contains('rm'))return; e.preventDefault(); target=clamp(target+e.deltaY, 0, Math.max(0,contentH-vh)); }
+  stage.addEventListener('wheel',onWheel,{passive:false});
+  // touch
+  var touchY=0;
+  stage.addEventListener('touchstart',function(e){touchY=e.touches[0].clientY;},{passive:true});
+  stage.addEventListener('touchmove',function(e){ if(reduced||body.classList.contains('rm'))return; var y=e.touches[0].clientY; target=clamp(target+(touchY-y)*1.5,0,Math.max(0,contentH-vh)); touchY=y; },{passive:true});
+
+  function setActiveSection(){
+    var mid=current+vh*0.5, acc=0, active=sections[0];
+    for(var i=0;i<sections.length;i++){ var h=sections[i].offsetHeight; if(mid>=sections[i].offsetTop && mid<sections[i].offsetTop+h){active=sections[i];break;} }
+    var bg=active.getAttribute('data-bg'), fg=active.getAttribute('data-fg'), lab=active.getAttribute('data-label');
+    if(bg){ stage.style.backgroundColor=bg; stage.style.color=fg; }
+    if(lab && hudLabel.textContent!==lab) hudLabel.textContent=lab;
+  }
+
+  function checkReveals(){
+    var trigger=current+vh*0.85;
+    revealEls.forEach(function(el){ if(!el.__in){ var top=absTop(el); if(top<trigger){ el.classList.add('in'); el.__in=true; } } });
+    splitEls.forEach(function(el){ if(!el.__in){ var top=absTop(el); if(top<trigger){ el.classList.add('in'); el.__in=true; } } });
+  }
+  function absTop(el){ var t=0,n=el; while(n && n!==scroll){ t+=n.offsetTop; n=n.offsetParent; } return t; }
+
+  function tick(){
+    if(reduced||body.classList.contains('rm')){
+      // native-ish: snap current to target instantly
+      current=target;
+    } else {
+      current+=(target-current)*LERP;
+    }
+    scroll.style.transform='translate3d(0,'+(-current)+'px,0)';
+    rail.style.width=(clamp(current/Math.max(1,contentH-vh),0,1)*100)+'%';
+
+    // carousel inertia
+    if(!dragging){ trackTarget=clamp(trackTarget,0,maxDrag); }
+    trackX+=(trackTarget-trackX)*(reduced?1:0.12);
+    track.style.transform='translate3d('+(-trackX)+'px,0,0)';
+    // cursor follow (driven here only)
+    curX+=(curTX-curX)*0.25; curY+=(curTY-curY)*0.25;
+    var showCur = carouselHover && !reduced && !body.classList.contains('rm');
+    cur.style.transform='translate('+curX+'px,'+curY+'px) scale('+(showCur?1:0)+')';
+
+    setActiveSection();
+    checkReveals();
+    requestAnimationFrame(tick);
+  }
+
+  var carouselHover=false;
+  carousel.addEventListener('pointerenter',function(){carouselHover=true;});
+  carousel.addEventListener('pointerleave',function(){carouselHover=false;});
+
+  /* reduced-motion toggle */
+  var rmBtn=document.getElementById('rmToggle');
+  function applyRM(on){ body.classList.toggle('rm',on); rmBtn.textContent=on?'motion: reduced':'motion: on'; rmBtn.setAttribute('aria-pressed',on); if(on){ target=current; } }
+  rmBtn.addEventListener('click',function(){ applyRM(!body.classList.contains('rm')); });
+  if(reduced) applyRM(true);
+
+  // init
+  requestAnimationFrame(function(){ resize(); setActiveSection(); checkReveals();
+    // hero title plays on load
+    var ht=document.getElementById('heroTitle'); ht.classList.add('in');
+    requestAnimationFrame(tick);
+  });
+  setTimeout(resize,300);
+})();
+</script>

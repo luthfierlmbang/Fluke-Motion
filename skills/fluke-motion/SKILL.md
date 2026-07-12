@@ -149,7 +149,9 @@ Structure each finding as: what's happening now → why it reads as off (name th
 
 ## Showcase
 
-[showcase/motion-specimen.html](showcase/motion-specimen.html) is a self-contained, open-in-any-browser demo covering the catalog end to end — 78 techniques built live in vanilla CSS/Canvas2D/JS, plus the remaining basic-tier and platform-specific entries cross-referenced for completeness. Reference for humans browsing the repo; not something a session needs to read to use this skill.
+Self-contained, open-in-any-browser demos (reference for humans browsing the repo; not something a session needs to read to use this skill):
+- [showcase/motion-specimen.html](showcase/motion-specimen.html) — the full catalog end to end: 78 techniques built live in vanilla CSS/Canvas2D/JS, plus basic-tier and platform-specific entries cross-referenced.
+- [showcase/dc-teardown.html](showcase/dc-teardown.html) — a **field teardown**: the seven interactive motion moves of a real site (digital-culture.valmax.dev) rebuilt in vanilla JS on one clock + one lerp constant, each labelled. Shows the modern-portfolio stack (smooth scroll, section theme shift, reveals, split-text, interactive list, drag carousel + contextual cursor, hover craft) as one coherent system, with a working reduced-motion toggle. See the teardown notes in [references/award-combinations.md](references/award-combinations.md#field-teardown-digital-culturevalmaxdev).
 
 ## General notes
 
