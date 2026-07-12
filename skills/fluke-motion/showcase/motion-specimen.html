@@ -192,6 +192,18 @@
   .pinpanel .media{ width:66%; height:58%; border-radius:8px; will-change:clip-path; }
   .pinpanel .cap{ position:absolute; left:14px; bottom:12px; font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; }
   .pinspacer{ height:210px; }
+
+  /* Committed light-lavender identity — lock it so OS/user dark mode can't flip the tokens
+     (dark mode was inverting --ink to a light value while grounds stayed light = invisible text). */
+  html{ color-scheme: light; }
+  :root, :root[data-theme="dark"], :root[data-theme="light"]{
+    --ink:#3E3958; --paper:#ECEBFF; --paper-raised:#E2DFFA;
+    --accent:#4B3FE4; --accent-soft:rgba(75,63,228,.15); --lime:#C7F04A;
+    --line:rgba(20,18,31,0.14); --line-strong:rgba(20,18,31,0.30);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --ink:#3E3958; --paper:#ECEBFF; --paper-raised:#E2DFFA; --accent:#4B3FE4; --accent-soft:rgba(75,63,228,.15); --lime:#C7F04A; --line:rgba(20,18,31,0.14); --line-strong:rgba(20,18,31,0.30); }
+  }
 </style>
 
 <div class="themebg" id="themebg"></div>
