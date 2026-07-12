@@ -52,12 +52,28 @@
   .hero{ grid-template-columns:1fr; align-items:center; text-align:left; }
   .hero-title{ font-family:var(--grotesk); font-weight:800; font-size:clamp(44px,9vw,128px); line-height:.92; letter-spacing:-.035em; margin:0; }
   .hero-title .line{ display:block; overflow:hidden; padding-bottom:.05em; }
-  .hero-title .line span{ display:block; transform:translateY(110%); }
-  .loaded .hero-title .line span{ transform:none; transition:transform .9s cubic-bezier(.16,1,.3,1); }
-  .loaded .hero-title .line:nth-child(2) span{ transition-delay:.08s; }
+  .hero-title .line > span{ display:block; transform:translateY(110%); }
+  .loaded .hero-title .line > span{ transform:none; transition:transform .9s cubic-bezier(.16,1,.3,1); }
+  .loaded .hero-title .line:nth-child(2) > span{ transition-delay:.08s; }
   .hero-sub{ max-width:56ch; margin:26px 0 0; font-size:clamp(15px,1.6vw,19px); line-height:1.55; color:var(--muted); opacity:0; }
   .loaded .hero-sub{ opacity:1; transition:opacity .8s ease .4s; }
   .hero-cue{ margin-top:30px; font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+
+  /* ---- hero: wavy letters + spotlight glow (mixed) ----
+     base layer = the real, always-legible headline (dim, idle wave).
+     glow layer = an aria-hidden duplicate, brighter, masked to a radial
+     spotlight that follows the pointer — same letters, same wave phase,
+     so the two read as one field of type with a light passing over it. */
+  .hero-title{ position:relative; }
+  .hero-title .line > span{ white-space:nowrap; }   /* letters split into inline-block .ch — keep the phrase on one line */
+  .hero-title .ch{ display:inline-block; will-change:transform; color:rgba(221,243,242,.62); }
+  .hero-title .ch.sp{ width:.28em; }
+  .hglow{ position:absolute; inset:0; pointer-events:none; -webkit-mask:radial-gradient(circle 1px at -999px -999px,#000 60%,transparent 62%); mask:radial-gradient(circle 1px at -999px -999px,#000 60%,transparent 62%); }
+  .hglow .line{ display:block; overflow:visible; }
+  .hglow .ch{ display:inline-block; will-change:transform; color:var(--lime); text-shadow:0 0 18px rgba(140,255,214,.55); }
+  .hglow .ch.sp{ width:.28em; }
+  body.rm .hero-title .ch{ transform:none !important; color:var(--ink) !important; }
+  body.rm .hglow{ display:none; }
 
   /* reveal */
   .rv{ opacity:0; transform:translateY(26px); transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1); }
@@ -303,12 +319,14 @@
   body.rm .ambient::before,body.rm .ambient::after{ animation:none; }
 
   @media (prefers-reduced-motion: reduce){
-    .hero-title .line span{ transform:none; } .hero-sub{ opacity:1; }
+    .hero-title .line > span{ transform:none; } .hero-sub{ opacity:1; }
     .rv{ opacity:1; transform:none; }
     .ambient::before,.ambient::after{ animation:none; }
+    .hero-title .ch{ transform:none !important; color:var(--ink) !important; }
+    .hglow{ display:none; }
   }
   body.rm .rv{ opacity:1 !important; transform:none !important; }
-  body.rm .hero-title .line span{ transform:none !important; }
+  body.rm .hero-title .line > span{ transform:none !important; }
 </style>
 
 <div class="cursor cur-dot" id="curDot"></div>
@@ -328,7 +346,14 @@
 <section class="hero" data-label="00 · Motion, in context">
   <div>
     <div class="tag" style="margin-bottom:14px;"><b>≋</b> Fluke Motion — reference showcase</div>
-    <h1 class="hero-title"><span class="line"><span>Motion, shown</span></span><span class="line"><span>in context.</span></span></h1>
+    <h1 class="hero-title" id="heroTitle" aria-label="Motion, shown in context.">
+      <span class="line"><span class="w" data-txt="Motion, shown"></span></span>
+      <span class="line"><span class="w" data-txt="in context."></span></span>
+      <div class="hglow" id="heroGlow" aria-hidden="true">
+        <span class="line"><span class="w" data-txt="Motion, shown"></span></span>
+        <span class="line"><span class="w" data-txt="in context."></span></span>
+      </div>
+    </h1>
     <p class="hero-sub">Not swatches in a grid — each technique lives inside a real component: pricing cards, a feature selector, a testimonial slider, an editorial pin-story. Every section explains what moves and why, then shows it working. One clock, one lerp (0.09), the whole way down.</p>
     <div class="hero-cue">↓ scroll — native &amp; smooth; every section explains a technique in a real component</div>
   </div>
@@ -838,6 +863,45 @@
           if(b.y< -20){ bubbles[i]=spawn(); } }
       });
     }
+  })();
+
+  /* ---------- hero: wavy letters mixed with a pointer-following spotlight ----
+     Base layer = real, always-legible headline text (dim, idle wave — never
+     gated behind hover, per the LCP/critical-content rule). Glow layer = an
+     aria-hidden duplicate, same letters, same wave phase, revealed only
+     inside a radial mask that chases the pointer — the two combine into one
+     wavy field of type with a light passing over it. */
+  (function(){
+    var title=document.getElementById('heroTitle'), glow=document.getElementById('heroGlow');
+    if(!title||!glow) return;
+    function splitInto(container){
+      var words=container.querySelectorAll('.w[data-txt]'); var chars=[];
+      words.forEach(function(w){
+        var txt=w.getAttribute('data-txt'); w.removeAttribute('data-txt'); w.innerHTML='';
+        for(var i=0;i<txt.length;i++){
+          var ch=txt[i], span=document.createElement('span');
+          span.className='ch'+(ch===' '?' sp':''); span.textContent=ch===' '?' ':ch;
+          w.appendChild(span); chars.push(span);
+        }
+      });
+      return chars;
+    }
+    var baseChars=splitInto(title), glowChars=splitInto(glow);
+    var mgx=-999,mgy=-999,curx=-999,cury=-999;
+    title.addEventListener('pointermove',function(e){ var r=title.getBoundingClientRect(); mgx=e.clientX-r.left; mgy=e.clientY-r.top; });
+    title.addEventListener('pointerleave',function(){ mgx=-999; mgy=-999; });
+    tickers.push(function(){
+      var rm=reduced||body.classList.contains('rm'); if(rm) return;
+      var t=performance.now()/1000;
+      for(var i=0;i<baseChars.length;i++){
+        var off=Math.sin(t*1.1+i*0.5)*4;
+        baseChars[i].style.transform='translateY('+off.toFixed(2)+'px)';
+        if(glowChars[i]) glowChars[i].style.transform='translateY('+off.toFixed(2)+'px)';
+      }
+      curx+=(mgx-curx)*0.18; cury+=(mgy-cury)*0.18;
+      var m='radial-gradient(circle 110px at '+curx.toFixed(1)+'px '+cury.toFixed(1)+'px,#000 55%,transparent 68%)';
+      glow.style.webkitMask=m; glow.style.mask=m;
+    });
   })();
 
   /* ---------- content ---------- */
